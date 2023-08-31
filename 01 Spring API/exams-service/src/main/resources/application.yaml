@@ -1,0 +1,13 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: EXAMINATOR
+    version: 0.0.1
+    environment: dev
+services:
+  math:
+    url: http://localhost:8081
+  history:
+      url: http://localhost:8082

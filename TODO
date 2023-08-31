@@ -1,0 +1,174 @@
+
+Spring Boot:
+  ☐ An extension to the Spring Framework Spring Boot makes it easy to create stand-alone, production-grade Spring based Applications that you can "just run"
+  ☐ Runs its own container as opposed to WAR files
+  ☐ Spring Boot makes it easy to create stand-alone, production-grade Spring based Applications that you can "just run"
+  ☐  pom.xml: spring-boot-starter
+  @Component - generic stereotype for any Spring-managed component: 
+    ☐ @Repository - stereotype for persistence layer
+    ☐ @Service - stereotype for service layer
+    ☐ @Controller - stereotype for presentation layer (spring-mvc)
+    ☐ @RestController - stereotype for presentation layer (spring-mvc) - returns JSON
+    ☐ @Configuration - indicates that a class declares one or more @Bean methods and may be processed by the Spring container to generate bean definitions and service requests for those beans at runtime
+    ☐ @EnableAutoConfiguration - enable Spring Boot’s auto-configuration mechanism
+    @Autowired - I want an instance injected here
+  ☐  mvnm spring-boot:run
+  ☐ @SpringBootApplication annotation: @Configuration, @EnableAutoConfiguration, @ComponentScan
+    ☐ some properties still need to be provided like server names etc.
+    ☐ use can use @override to override the default values
+    ☐ java -jar target/myproject-0.0.1-SNAPSHOT.jar --debug to see what is being autoconfigured
+  Lets build app bottom up all the way to controller:
+    ☐ Add @repository to the repository class (no persistence layer yet)
+    Annotate to turn into rest controller:
+      ☐ @RestController
+      ☐ @RequestMapping("/questions") so you can omit path later on
+      ☐ @GetMapping("/questions") vs getQ@RequestMapping(method=RequestMethod.GET) {...}
+      ☐ @GetMapping(path="/questions/{id}") getQ(@PathVariable("id")) int id) {..}
+      ☐ @GetMapping(path="/questions") getQ(@RequestParam("id")) int id) {..}
+      ☐ General consideration - adopt a convention (uniform mapping or entity access)
+      ☐ @PostMapping Question createQuestion(@RequestBody Question question) {..}
+      ☐ Getting data in @RequestBody - JSON
+      ☐ Exercise: add POST and PUT to the controller
+    Handling exceptions:
+      ☐ methodName throws KindOfException {..}
+      ☐ 500 - Internal Server Error not a proper way
+      ☐ return mathQuestionsRepo.findById(id).orElseThrow(() -> new NoSuchElementException(id));
+      ☐ @ExceptionHandler(KindOfException.class) public ErrorResponse handleException(NoSuchElementException ex) {..}
+        return ErrorResponse.create(ex, HttpStatus.NOT_FOUND, ex.getMessage());
+      Validation: 
+        ☐ spring-boot-validation dependency
+        ☐ @Valid @RequestBody Question question
+        Domain annotations:
+        ☐ @NotNull(message = "Question is mandatory")
+        ☐ @Size(min = 2, message = "Question should have at least 2 characters")
+        ☐ @Size(max = 100, message = "Question should have at most 100 characters")
+        ☐ @Pattern(regexp = "[A-Za-z0-9 ]*", message = "Question has invalid characters")
+        ☐ @NotBlank(message = "Question cannot be blank")
+        ☐ Then you can throw ConstraintViolationException and handle it in the controller with the error response of type ErrorResponse HttpStatus.BAD_REQUEST
+        
+    Persistence:
+        ☐ core vs community Spring Data libs
+        ☐ CrudRepository 
+        ☐ public interface MathQuestionsRepo extends JpaRepository<Question, Integer> {..}
+        ☐ [or DBSpecificTypeRepository]
+        ☐ @Entity vs @Document
+          ☐ @Id in @Document are strings!
+          ☐ UUID is the most common type for @Id
+          ☐ @Entity - GeneratedValue(strategy = GenerationType.IDENTITY) for autoincrement for id
+        ☐ Declare your repo as above and Spring will autoconfigure it for you
+        ☐ findById, findAll, save, delete, deleteAll etc. will be autoconfigured if you follow convention
+        ☐ @Override if you want your own implementation
+        ☐ Exercise: add NoSQL persistence just for fun (we will not use it)
+        ☐ Sidenotes:
+            not much fun with RDMBS - initializing schema and data with profiles
+            ☐ Managing migrations with flyway
+    Configuring the app with externalized configuration:
+        ☐ application.properties in src/main/resources/application.yml 
+        ☐ mvn sprint-boot:run -Dspring-boot.run.profiles=localenv
+
+  Docker:
+    Basic commands: 
+      docker run -it ubuntu bash
+      docker ps
+      docker ps -a
+      docker images
+      docker rm <container id>
+      docker rmi <image id>
+      docker run -d -p 8080:8080 --name myapp myapp
+      docker exec -it <container id> bash
+      docker stop <container id>
+      docker start <container id>
+      docker logs <container id>
+      docker build .
+      Layers
+    Buiulding:
+      ☐ mvn spring-boot:build-image
+      ☐ Create a Dockerfile
+        ☐ FROM openjdk:17-jdk-alpine
+        ☐ talk through the structure
+      ☐ tagging:
+        docker tag <image id> <acr url/<repo name>:<tag>
+        docker tag <image id> <dockerhub username>/<repo name>:latest
+        docker tag <image id> <dockerhub username>/<repo name>:$(git rev-parse --short HEAD)
+        docker push --all-tags <acr url/<repo name>
+      ☐ Exercise: create script which builds, tags, and pushes to the registry
+
+  Kubernetes:
+    Running local:
+    Core concepts:
+        ☐ Core services: API Server, Scheduler, Controller Manager, etcd
+        Cluster and its edge
+        Pods
+        ReplicaSets
+        Deployments
+        Services
+            Labels and selectors
+        Ingress
+        ConfigMaps
+        Secrets
+        Namespaces
+        Health checks:
+          ☐ Liveness (to kill or not to kill)
+          ☐ Readiness (to route or not to route)
+        Exercise: deploy simple app imperatively
+        Exercise: deploy new version
+        Exercise: fall back to previous version
+
+    Declarative VS imperative:
+      ☐ /api/ and talking to it
+      ☐ Deploying imperative way
+      ☐ Deploying declarative (not really) way with YAML
+      Exercise: deploy with YAML
+        Exercise: add Actuator and configure health checks
+        Exercise: add a config map
+        Exercise: add a deployment for each service
+        Exercise: add a service for each deployment
+        Exercise: add an ingress & why do we need port forwarding
+
+
+    Running in AKS:
+
+      ☐ Exercise: kill a pod, see what happens
+    Scaling:
+      ☐ Manual and Auto
+      ☐ Exercise: bring up more replicas
+      ☐ Exercise: set up autoscaling
+    Self-healing:
+      ☐ 
+
+    Release strategy:
+    ☐ Using selectors & labels
+    ☐ Using clusters (repaving)
+    ☐ Using namespaces
+  Azure:
+    Design considerations:
+      Complexity of your solution: exponential vs logarithmic
+      SPSTC(p)W: Simplest possible solution that could (possibly) work
+      ☐ Locality
+      Availability
+      Security and the attack surface
+      Maintainability: do we need a Caterpillar truck?
+    Core styles and entities:
+      IaaS VS PaaS vs SaaS
+      CaaS: retain some independence
+
+  CosmosDB:
+    Relational vs NoSQL vs Graph
+    Gremlin interface
+    Geo-replication
+    Consistency levels
+    Partitioning: how to choose the key
+    Indexing:
+    Scaling: provisioned VS serverless
+    Accessing: public endpoint vs private endpoint
+    Exercise: create a CosmosDB account & use Data Explorer
+        CRUD Questions
+        Search Questions
+    Getting data into Gremlin: no out-of-the-box solution;
+        write your own with BulkExecutor
+        or dump into JSON then use Data Import tool with JSON
+        https://learn.microsoft.com/en-us/azure/cosmos-db/migration-choices
+
+
+
+
