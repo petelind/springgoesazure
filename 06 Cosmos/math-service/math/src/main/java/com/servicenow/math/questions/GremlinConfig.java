@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Configuration;
 
 import org.apache.tinkerpop.gremlin.util.ser.GraphSONMessageSerializerV2;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +34,7 @@ public class GremlinConfig {
 
     @Bean
     public Client gremlinClient() {
-        Map<String, Object> serializerConfig = new HashMap<>();
+/*        Map<String, Object> serializerConfig = new HashMap<>();
         serializerConfig.put("serializeResultToString", true);
 
         GraphSONMessageSerializerV2 serializer = new GraphSONMessageSerializerV2();
@@ -43,6 +45,24 @@ public class GremlinConfig {
                 .serializer(serializer)
                 .port(443)
                 .create();
-        return cluster.connect().alias("g");
+        return cluster.connect(); */
+
+        Client client;
+        Cluster cluster;
+
+        try {
+            // Attempt to create the connection objects
+            cluster = Cluster.build(new File("src/main/resources/remote.yaml")).create();
+            client = cluster.connect();
+
+        } catch (FileNotFoundException e) {
+            // Handle file errors.
+            System.out.println("Couldn't find the configuration file.");
+            e.printStackTrace();
+            return null;
+
+        }
+        return client;
+
     }
 }

@@ -59,10 +59,10 @@ public class QuestionRepositoryGremlin {
     }
 
     public List<Question> findAllQuestions() throws ExecutionException, InterruptedException {
-        String query = "g.V().hasLabel('Question').valueMap().toList()";
+        String query = "g.V().hasLabel('Question')";
 
         List<Result> results = gremlinClient.submit(query).all().get();
-
+        // Todo: seems there is no getVertex() method in Result class anymore. Need alternate way to get vertex properties.
         return results.stream().map(result ->
                 new Question(
                         (Integer) result.getVertex().property("Id").value(),
