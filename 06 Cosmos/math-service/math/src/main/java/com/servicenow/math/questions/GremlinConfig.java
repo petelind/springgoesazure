@@ -3,6 +3,7 @@ package com.servicenow.math.questions;
 import org.apache.tinkerpop.gremlin.driver.Client;
 import org.apache.tinkerpop.gremlin.driver.Cluster;
 
+import org.apache.tinkerpop.gremlin.driver.remote.DriverRemoteConnection;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -53,7 +54,7 @@ public class GremlinConfig {
         try {
             // Attempt to create the connection objects
             cluster = Cluster.build(new File("src/main/resources/remote.yaml")).create();
-            client = cluster.connect();
+            client = cluster.connect().alias("g");
 
         } catch (FileNotFoundException e) {
             // Handle file errors.
@@ -64,5 +65,10 @@ public class GremlinConfig {
         }
         return client;
 
+    }
+
+    @Bean
+    DriverRemoteConnection connection(Client gremlinClient) {
+        return DriverRemoteConnection.using(gremlinClient);
     }
 }
