@@ -1,0 +1,218 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: examinator-config
+  namespace: green
+data:
+    server.port: "8080"
+    spring.application.name: "EXAMINATOR"
+    spring.application.version: "0.0.1"
+    spring.application.environment: "green"
+    services.math.url: "http://provider-math:8080"
+    services.history.url: "http://provider-history:8080"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: history-config
+  namespace: green
+data:
+    server.port: "8080"
+    spring.application.name: "HISTORY"
+    spring.application.version: "0.0.1"
+    spring.application.environment: "green"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: green
+  name: math-config
+data:
+  server.port: "8080"
+  spring.application.name: "MATH"
+  spring.application.version: "0.0.1"
+  spring.application.environment: "green"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-examinator-deployment
+  namespace: green
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: backend-green-examinator
+  template:
+    metadata:
+      labels:
+        name: backend-green-examinator
+    spec:
+      containers:
+        - name: exam-provider-container
+          image: provider-examinator:kubernetes
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SERVER_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: examinator-config
+                  key: server.port
+            - name: SPRING_APPLICATION_NAME
+              valueFrom:
+                  configMapKeyRef:
+                    name: examinator-config
+                    key: spring.application.name
+            - name: SPRING_APPLICATION_VERSION
+              valueFrom:
+                  configMapKeyRef:
+                      name: examinator-config
+                      key: spring.application.version
+
+            - name: SPRING_APPLICATION_ENVIRONMENT
+              valueFrom:
+                  configMapKeyRef:
+                      name: examinator-config
+                      key: spring.application.environment
+            - name: SERVICES_MATH_URL
+              valueFrom:
+                  configMapKeyRef:
+                      name: examinator-config
+                      key: services.math.url
+
+            - name: SERVICES_HISTORY_URL
+              valueFrom:
+                  configMapKeyRef:
+                      name: examinator-config
+                      key: services.history.url
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-math-deployment
+  namespace: green
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: backend-green-math
+  template:
+    metadata:
+      labels:
+        name: backend-green-math
+    spec:
+      containers:
+        - name: provider-math-container
+          image: provider-math:kubernetes
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SERVER_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: math-config
+                  key: server.port
+            - name: SPRING_APPLICATION_NAME
+              valueFrom:
+                  configMapKeyRef:
+                      name: math-config
+                      key: spring.application.name
+            - name: SPRING_APPLICATION_VERSION
+              valueFrom:
+                  configMapKeyRef:
+                      name: math-config
+                      key: spring.application.version
+            - name: SPRING_APPLICATION_ENVIRONMENT
+              valueFrom:
+                  configMapKeyRef:
+                      name: math-config
+                      key: spring.application.environment
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-history-deployment
+  namespace: green
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: backend-green-history
+  template:
+    metadata:
+      labels:
+        name: backend-green-history
+    spec:
+      containers:
+        - name: provider-history-container
+          image: provider-history:kubernetes
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SERVER_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: history-config
+                  key: server.port
+            - name: SPRING_APPLICATION_NAME
+              valueFrom:
+                  configMapKeyRef:
+                      name: history-config
+                      key: spring.application.name
+            - name: SPRING_APPLICATION_VERSION
+              valueFrom:
+                  configMapKeyRef:
+                      name: history-config
+                      key: spring.application.version
+            - name: SPRING_APPLICATION_ENVIRONMENT
+              valueFrom:
+                  configMapKeyRef:
+                      name: history-config
+                      key: spring.application.environment
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: endpoint-math
+  namespace: green
+spec:
+  selector:
+    name: backend-green-math
+  ports:
+    - port: 8080
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: endpoint-history
+  namespace: green
+spec:
+  selector:
+    name: backend-green-history
+  ports:
+    - port: 8080
+      targetPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: endpoint-examinator
+  namespace: green
+spec:
+  type: NodePort
+  selector:
+    name: backend-green-examinator
+  ports:
+    - name: http-endpoint
+      port: 8080
+      nodePort: 30080
+      targetPort: 8080
