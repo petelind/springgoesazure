@@ -24,15 +24,25 @@ docker login $ACRNAME.azurecr.io --username $ACRNAME --password $ACRPASSWORD
 az aks create \
     --resource-group $RGNAME  \
     --name examcluster \
+     --min-count 1 \
+     --max-count 3 \
     --network-plugin azure \
     --enable-managed-identity \
     --enable-addon ingress-appgw \
     --appgw-name AZSpringAPI-gw \
     --appgw-subnet-cidr "10.225.0.0/16" \
-    --attach-acr $ACRNAME
-    --use-ssh-key ~/.ssh/id_rsa.pub
+    --attach-acr $ACRNAME \
+    --generate-ssh-keys
+    #--zones 1 2 3  \ # if you want to deploy to multiple zones and be highly available
 
-# if you dont have any: --generate-ssh-keys
+# Use --auto-scaler-profile to enable cluster autoscaler and set it properties, as described in the following example:
+# --auto-scaler-profile expander=price scan-interval=60s scale-down-delay-after-add=10m scale-down-unneeded-time=10m scale-down-unready-time=10m
+# more here https://learn.microsoft.com/en-us/azure/aks/cluster-autoscaler
+
+# Way more advanced approach here:
+# https://learn.microsoft.com/en-us/azure/application-gateway/ingress-controller-autoscale-pods
+
+# if you want to retain yours: --use-ssh-key ~/.ssh/id_rsa.pub
 ##Get the kubeconfig to log into the cluster
 az aks get-credentials --resource-group $RGNAME --name examcluster
 
@@ -72,6 +82,9 @@ kubectl run -it --rm --image=curlimages/curl curly -- sh
 ##Our ingress controller is a pod running in the cluster...
 ###monitoring for ingress resources and updating the configuration of the AppGW
 kubectl describe pods -n kube-system -l app=ingress-appgw | more
+
+# lets see our availability zones:
+kubectl describe nodes | grep -e "Name:" -e "topology.kubernetes.io/zone"
 
 
 #Open the Azure Portal, search for examcluster and go to the Managed Cluster Resource Group

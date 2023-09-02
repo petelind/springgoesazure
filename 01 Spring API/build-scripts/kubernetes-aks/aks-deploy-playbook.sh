@@ -1,5 +1,4 @@
 #!/bin/bash
-set -ex  # Exit on error and print each command
 
 # set app version to 0.0.1-SNAPSHOT; just so we can see what we have built
 export APP_VERSION=0.0.1-SNAPSHOT
@@ -8,18 +7,18 @@ export RGNAME=AZSpringAPI1
 export ACRNAME=azspringapiacr1
 
 # Deploy a cluster with an AppGW Ingress Controller for exam API access
-az group create --name $RGNAME --location southindia
+az group create --name $RGNAME --location centralus
 
 ## Create Azure Container Regisry with admin enabled
 az acr create --resource-group $RGNAME --name $ACRNAME --sku Basic --admin-enabled true
 
 ## Get credetials for ACR to push containers there and store the in env variable for later use
-ACRPASSWORD=$(az acr credential show --resource-group $RGNAME --name $ACRNAME ---output json --query 'passwords[0].value')
+ACRPASSWORD=$(az acr credential show --resource-group $RGNAME --name $ACRNAME --output json --query 'passwords[0].value')
 export ACRPASSWORD=${ACRPASSWORD//\"/}
 
 ## Login to ACR and push images tagged with ACR name
 docker login $ACRNAME.azurecr.io --username $ACRNAME --password $ACRPASSWORD
-../build-images-kubernetes-acr.sh $ACRNAME $ACRPASSWORD
+../build-scripts/build-images-kubernetes-acr.sh $ACRNAME $ACRPASSWORD
 
 ##Create a cluster with the AppGW Ingress addon
 az aks create \
@@ -31,9 +30,10 @@ az aks create \
     --appgw-name AZSpringAPI-gw \
     --appgw-subnet-cidr "10.225.0.0/16" \
     --attach-acr $ACRNAME \
-    --use-ssh-key ~/.ssh/id_rsa.pub
+    --generate-ssh-keys
 
-# if you dont have any: --generate-ssh-keys
+
+# if you want to retain yours: --use-ssh-key ~/.ssh/id_rsa.pub
 ##Get the kubeconfig to log into the cluster
 az aks get-credentials --resource-group $RGNAME --name examcluster
 

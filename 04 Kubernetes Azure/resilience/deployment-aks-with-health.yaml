@@ -4,12 +4,12 @@ metadata:
   name: examinator-config
   namespace: green
 data:
-    server.port: "8080"
-    spring.application.name: "EXAMINATOR"
-    spring.application.version: "0.0.1"
-    spring.application.environment: "green"
-    services.math.url: "http://endpoint-math:8080"
-    services.history.url: "http://endoint-history:8080"
+  server.port: "8080"
+  spring.application.name: "EXAMINATOR"
+  spring.application.version: "0.0.1"
+  spring.application.environment: "green"
+  services.math.url: "http://endpoint-math:8080"
+  services.history.url: "http://endoint-history:8080"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -17,10 +17,10 @@ metadata:
   name: history-config
   namespace: green
 data:
-    server.port: "8080"
-    spring.application.name: "HISTORY"
-    spring.application.version: "0.0.1"
-    spring.application.environment: "green"
+  server.port: "8080"
+  spring.application.name: "HISTORY"
+  spring.application.version: "0.0.1"
+  spring.application.environment: "green"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -88,31 +88,39 @@ spec:
                   key: server.port
             - name: SPRING_APPLICATION_NAME
               valueFrom:
-                  configMapKeyRef:
-                    name: examinator-config
-                    key: spring.application.name
+                configMapKeyRef:
+                  name: examinator-config
+                  key: spring.application.name
             - name: SPRING_APPLICATION_VERSION
               valueFrom:
-                  configMapKeyRef:
-                      name: examinator-config
-                      key: spring.application.version
+                configMapKeyRef:
+                  name: examinator-config
+                  key: spring.application.version
 
             - name: SPRING_APPLICATION_ENVIRONMENT
               valueFrom:
-                  configMapKeyRef:
-                      name: examinator-config
-                      key: spring.application.environment
+                configMapKeyRef:
+                  name: examinator-config
+                  key: spring.application.environment
             - name: SERVICES_MATH_URL
               valueFrom:
-                  configMapKeyRef:
-                      name: examinator-config
-                      key: services.math.url
+                configMapKeyRef:
+                  name: examinator-config
+                  key: services.math.url
 
             - name: SERVICES_HISTORY_URL
               valueFrom:
-                  configMapKeyRef:
-                      name: examinator-config
-                      key: services.history.url
+                configMapKeyRef:
+                  name: examinator-config
+                  key: services.history.url
+          livenessProbe:
+            httpGet:
+              port: 8080
+              path: /actuator/health/liveness
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: /actuator/health/readiness
 
 ---
 apiVersion: apps/v1
@@ -144,19 +152,27 @@ spec:
                   key: server.port
             - name: SPRING_APPLICATION_NAME
               valueFrom:
-                  configMapKeyRef:
-                      name: math-config
-                      key: spring.application.name
+                configMapKeyRef:
+                  name: math-config
+                  key: spring.application.name
             - name: SPRING_APPLICATION_VERSION
               valueFrom:
-                  configMapKeyRef:
-                      name: math-config
-                      key: spring.application.version
+                configMapKeyRef:
+                  name: math-config
+                  key: spring.application.version
             - name: SPRING_APPLICATION_ENVIRONMENT
               valueFrom:
-                  configMapKeyRef:
-                      name: math-config
-                      key: spring.application.environment
+                configMapKeyRef:
+                  name: math-config
+                  key: spring.application.environment
+          livenessProbe:
+            httpGet:
+              port: 8080
+              path: /actuator/health/liveness
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: /actuator/health/readiness
 
 ---
 apiVersion: apps/v1
@@ -188,19 +204,27 @@ spec:
                   key: server.port
             - name: SPRING_APPLICATION_NAME
               valueFrom:
-                  configMapKeyRef:
-                      name: history-config
-                      key: spring.application.name
+                configMapKeyRef:
+                  name: history-config
+                  key: spring.application.name
             - name: SPRING_APPLICATION_VERSION
               valueFrom:
-                  configMapKeyRef:
-                      name: history-config
-                      key: spring.application.version
+                configMapKeyRef:
+                  name: history-config
+                  key: spring.application.version
             - name: SPRING_APPLICATION_ENVIRONMENT
               valueFrom:
-                  configMapKeyRef:
-                      name: history-config
-                      key: spring.application.environment
+                configMapKeyRef:
+                  name: history-config
+                  key: spring.application.environment
+          livenessProbe:
+            httpGet:
+              port: 8080
+              path: /actuator/health/liveness
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: /actuator/health/readiness
 
 ---
 apiVersion: v1
