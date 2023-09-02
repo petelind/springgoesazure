@@ -23,4 +23,19 @@
         <module>history-service</module>
         <module>math-service</module>
     </modules>
+    <profiles>
+        <profile>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <id>with-kubernetes</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-starter-kubernetes-client-config</artifactId>
+                    <version>3.0.3</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 </project>
