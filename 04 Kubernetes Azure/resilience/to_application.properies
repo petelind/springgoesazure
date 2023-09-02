@@ -1,0 +1,12 @@
+# Kubernetes readiness/liveness probes
+management.health.probes.enabled=true
+
+
+# Show information about indicators included into the readiness probe (change from never to always)
+management.endpoint.health.group.readiness.show-components=always
+management.endpoint.health.group.liveness.show-components=always
+management.endpoint.health.show-details=always
+management.endpoint.health.show-values=always
+
+# what to show in the /actuator/health endpoint
+management.endpoint.web.exposure.include=health,info,metrics,conditions,mappings,loggers,beans
