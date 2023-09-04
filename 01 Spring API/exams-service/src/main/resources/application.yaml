@@ -11,3 +11,10 @@ services:
     url: http://localhost:8081
   history:
       url: http://localhost:8082
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
