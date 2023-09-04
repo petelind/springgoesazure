@@ -47,6 +47,9 @@ kubectl config set-context --current --namespace=green
 # if you ever need to attach ACR to live AKS cluster:
 # az aks update -n examcluster  -g $RGNAME --attach-acr $ACRNAME
 
+# Create containers using our script and build the images and put them into ACR
+../build-images-kubernetes-acr.sh $ACRNAME $ACRPASSWORD
+
 #Create a Deployment, ClusterIP Service, and Ingress to access our application via AppGW
 #Look into the file for examples of deployments, services, configmaps etc.
 sed -i "s|image: PLACEHOLDER.azurecr.io|image: $ACRNAME.azurecr.io|g" deployment-aks-with-ingress.yml
@@ -68,7 +71,9 @@ kubectl get ingress --watch
 export INGRESSIP=$(kubectl get ingress -o jsonpath='{ .items[].status.loadBalancer.ingress[].ip }')
 echo $INGRESSIP
 curl http://$INGRESSIP
-kubectl run -it --rm --image=curlimages/curl curly -- sh
+
+# Local troubleshooting:
+# kubectl run -it --rm --image=curlimages/curl curly -- sh
 
 ##Our ingress controller is a pod running in the cluster...
 ###monitoring for ingress resources and updating the configuration of the AppGW

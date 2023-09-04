@@ -16,18 +16,18 @@ function build_basic() {
 
   echo "Target registry is: $BASE_URL"
   echo "Tagging images as $BASE_URL/${APP_NAME}:latest and $BASE_URL/${APP_NAME}:${POINTER}... "
-  docker build -f ./build-scripts/basic/Dockerfile \
-    --build-arg JAR_FILE=${JAR_FILE} \
-     -t $BASE_URL/${APP_NAME}:latest \
-     -t $BASE_URL/${APP_NAME}:${POINTER} .
-
-  docker push --all-tags $BASE_URL/${APP_NAME}
+#  docker build -f ./build-scripts/basic/Dockerfile \
+#    --build-arg JAR_FILE=${JAR_FILE} \
+#     -t $BASE_URL/${APP_NAME}:latest \
+#     -t $BASE_URL/${APP_NAME}:${POINTER} .
+#
+#  docker push --all-tags $BASE_URL/${APP_NAME}
 
   # to stay within cloud shell limits, we can do the following:
-  #az acr build --image $BASE_URL/${APP_NAME}:latest \
-  #  --image $BASE_URL/${APP_NAME}:${POINTER} \
-  #  --build-arg JAR_FILE=${JAR_FILE} \
-  #  --registry $3 --file ./build-scripts/basic/Dockerfile .
+  az acr build --image $BASE_URL/${APP_NAME}:latest \
+    --image $BASE_URL/${APP_NAME}:${POINTER} \
+    --build-arg JAR_FILE=${JAR_FILE} \
+    --registry $3 --file ./build-scripts/basic/Dockerfile .
 
 }
 
@@ -41,6 +41,3 @@ echo "Building Docker images..."
 build_basic ./math-service/target/math-service-${APP_VERSION}.jar provider-math $1
 build_basic ./history-service/target/history-service-${APP_VERSION}.jar provider-history $1
 build_basic ./exams-service/target/exams-service-${APP_VERSION}.jar provider-examinator $1
-
-echo "Here are your images:"
-docker images | grep $BASE_URL
