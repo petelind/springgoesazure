@@ -16,7 +16,7 @@ function build_basic() {
 
   echo "Target registry is: $BASE_URL"
   echo "Tagging images as $BASE_URL/${APP_NAME}:latest and $BASE_URL/${APP_NAME}:${POINTER}... "
-#  docker build -f ./build-scripts/basic/Dockerfile \
+#  docker build -f ./build-scripts/basic/Dockerfil./e \
 #    --build-arg JAR_FILE=${JAR_FILE} \
 #     -t $BASE_URL/${APP_NAME}:latest \
 #     -t $BASE_URL/${APP_NAME}:${POINTER} .

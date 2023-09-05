@@ -8,6 +8,7 @@ export ACRNAME=azspringapiacr2
 
 # Deploy a cluster with an AppGW Ingress Controller for exam API access
 az group create --name $RGNAME --location centralus
+az config set defaults.group=$RGNAME
 
 ## Create Azure Container Regisry with admin enabled
 az acr create --resource-group $RGNAME --name $ACRNAME --sku Basic --admin-enabled true
@@ -47,13 +48,11 @@ kubectl config set-context --current --namespace=green
 # if you ever need to attach ACR to live AKS cluster:
 # az aks update -n examcluster  -g $RGNAME --attach-acr $ACRNAME
 
-# Create containers using our script and build the images and put them into ACR
-../build-images-kubernetes-acr.sh $ACRNAME $ACRPASSWORD
 
 #Create a Deployment, ClusterIP Service, and Ingress to access our application via AppGW
 #Look into the file for examples of deployments, services, configmaps etc.
 sed -i "s|image: azspringapiacr1.azurecr.io|image: $ACRNAME.azurecr.io|g" deployment-aks.yaml
-kubectl apply -f deployment-aks.yml
+c
 
 # alternate way to expose is via l3 ingress - LoadBalancer
 #kubectl expose deployment backend-examinator-deployment --name=l3balancer --type=LoadBalancer --port=80 --target-port 8080
