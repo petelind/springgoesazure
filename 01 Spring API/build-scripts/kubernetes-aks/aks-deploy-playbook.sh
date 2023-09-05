@@ -2,9 +2,9 @@
 
 # set app version to 0.0.1-SNAPSHOT; just so we can see what we have built
 export APP_VERSION=0.0.1-SNAPSHOT
-export RGNAME=AZSpringAPI1
+export RGNAME=AZSpringAPI2
 ## Todo: add few random numbers to registry name to make it globally unique
-export ACRNAME=azspringapiacr1
+export ACRNAME=azspringapiacr2
 
 # Deploy a cluster with an AppGW Ingress Controller for exam API access
 az group create --name $RGNAME --location centralus
@@ -52,7 +52,7 @@ kubectl config set-context --current --namespace=green
 
 #Create a Deployment, ClusterIP Service, and Ingress to access our application via AppGW
 #Look into the file for examples of deployments, services, configmaps etc.
-sed -i "s|image: PLACEHOLDER.azurecr.io|image: $ACRNAME.azurecr.io|g" deployment-aks-with-ingress.yml
+sed -i "s|image: azspringapiacr1.azurecr.io|image: $ACRNAME.azurecr.io|g" deployment-aks.yaml
 kubectl apply -f deployment-aks.yml
 
 # alternate way to expose is via l3 ingress - LoadBalancer
