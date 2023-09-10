@@ -1,0 +1,37 @@
+Repository:
+    ☐ Implement storing new Questions to the DB.
+    ☐ Implement getting all Questions from the DB paginated:
+        ☐ Take page number and page size as parameters.
+        ☐ Return a list of questions on that page.
+        ☐ Raise an IllegalArgumentException if page number is less than 0 or page size is less than 1.
+        
+Record:
+    Implement validation of the Question record:
+        ☐ Question text should not be empty.
+        ☐ Question text should be less than 255 characters.
+        ☐ Answer should not be empty.
+
+Controller:
+    ☐ Inject QuestionGenerator into the controller.
+    ☐ Identify what is missing and implement that bean.
+    ☐ Implement a controller that will handle GET requests to /questions/{id} endpoint.
+    ☐ Implement a controller that will handle GET requests to /random endpoint:
+        ☐ Takes X question from repo.
+        ☐ If there is less than X in the repo - calls service to generate more questions.
+        ☐ Generated questions also stored in the repo.
+    ☐ Implement a controller that will handle POST requests to /questions endpoint.
+        ☐ Takes a Question object in the request body.
+        ☐ Returns the same Question object in the response body.
+        ☐ If no id - create one.
+        ☐ If the question is valid - store it in the repo.
+        ☐ If the question is not valid - raise IllegalArgumentException and see what happens.
+    ☐ Implement a controller that will handle PUT requests to /questions/{id} endpoint.
+    ☐ Implement a controller that will handle DELETE requests to /questions/{id} endpoint.
+    Handle IllegalArgumentExceptions:
+        ☐ Add expected IllegalArgumentExceptions to the method signatures.
+        ☐ Return ErrorResponse with HttpStatus.BAD_REQUEST.
+        ☐ Return a message in the response body.
+
+Hard:
+    1. declare that your repository implements CrudRepository interface. See what you have to implement.
+    2. Create a new class that implements CrudRepository interface, especially findALl() methods.
