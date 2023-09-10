@@ -16,11 +16,15 @@ public class BasicLivenessController {
     @Value("${application.environment}")
     private String environment;
 
-    @Operation(summary = "Basic liveness check", description = "Basic liveness check")
+    @Value("${application.name}")
+    private String name;
+
+    @Operation(summary = "Basic liveness check",
+            description = "Allows you instantly identify which version of app on which environment is running")
     @GetMapping("/")
     public String basicAlive()
     {
-        return "v." + version + " MathDirect is alive! Environment: " + environment;
+        return "v." + version + " " + name + " is alive! Environment: " + environment;
     }
 
 
