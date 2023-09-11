@@ -20,7 +20,7 @@ public class BasicLivenessController {
     @GetMapping("/")
     public String basicAlive()
     /**
-     * This method is used to check if the service is alive (not healthy or no) without the actuator endpoints.
+     * This method is used to check if the service aliveness (not readiness) without the actuator endpoints.
      * @param version: The version of the service (e.g. 1.0.0); auto-populated from config.
      * @param environment: The environment the service is running in (e.g. dev, test, prod); auto-populated from config.
      * @return String which will contain the version and environment of the service running.
