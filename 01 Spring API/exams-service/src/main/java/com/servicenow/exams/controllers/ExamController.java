@@ -87,8 +87,12 @@ public class ExamController {
 
     @PostMapping("/exams/complete")
     @Transactional
-    public Exam createAllSpanningExam(@RequestParam int size, @RequestParam String name, @RequestParam String description) {
-        // get questions from both services
+    public Mono<Exam> createAllSpanningExam(
+            @RequestParam int size,
+            @RequestParam String name,
+            @RequestParam String description
+    ) {
+        // Get questions from both services
         Mono<List<Question>> mathQuestions = this.mathClient.post().uri("/random?amount=" + size)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
@@ -97,25 +101,37 @@ public class ExamController {
 
         Mono<List<Question>> historyQuestions = this.historyClient.getQuestions(size);
 
-        // combine them into one list
+        // Combine them into one list - there is no readymade method for this, so we have to use zipWith
         Mono<List<Question>> allQuestions = mathQuestions.zipWith(historyQuestions)
                 .map(tuple -> {
                     List<Question> math = tuple.getT1();
                     List<Question> history = tuple.getT2();
                     math.addAll(history);
-                    return math;
+                    return math; // its not math anymore, its combined list. you can combine with history with the same result
                 });
 
-        // TODO: Map the list of questions to a list of question ids. Keep in mind - those are Monos, not Lists!
-        String questionIds = "1, 2, 3, 4";
+        // If you dont understand whats happening here, here is what you need:
+        // https://www.udemy.com/course/functional-programming-and-reactive-programming-in-java/
+        return allQuestions.flatMap(allQuestionsList -> {
+            // Now, let's get the IDs out of each question and create a string of IDs
+            String questionIds = allQuestionsList.stream()
+                    .map(Question::Id) // Use Id
+                    .map(String::valueOf) // Convert to string
+                    .collect(Collectors.joining(","));
 
-        Exam exam = new Exam();
-        exam.setName(name);
-        exam.setQuestions(questionIds);
-        exam.setDescription(description);
-        return this.examRepository.save(exam);
+            // try to return the exam as POJO - see what gonna happen
+            Exam exam = new Exam();
+            exam.setName(name);
+            exam.setQuestions(questionIds);
+            exam.setDescription(description);
+            // even if you will force it to return exam, it will fail the thread, because it is not reactive
 
+            // Save the exam to the repository and return it as a Mono, because the context is still reactive
+            return Mono.just(examRepository.save(exam));
+            // Bottom line: as soon as you entered the reactive context - you're stuck in it
+        });
     }
+
 
 
 
