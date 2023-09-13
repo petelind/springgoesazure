@@ -3,14 +3,16 @@ version: '2.4'
 services:
   persistence:
     image: mongo:latest
+    mem_limit: 512m
+    mem_reservation: 128M
+    cpus: 0.5
     volumes:
       - type: volume
         source: /data/db
         target: /data/db
     ports:
       - 27017:27017
-    Memory: 1024M
-    Cpu: 0.5
+    
   
 
   provider-math:
