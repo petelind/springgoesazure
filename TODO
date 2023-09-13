@@ -2,97 +2,112 @@ This is content I intend to cover during 2 weeks Sep 11 - Sep 22.
 
 Spring Boot:
   Core concepts:      
-    ☐ extension to the Spring Framework Spring Boot makes it easy to create stand-alone, production-grade Spring based Applications that you can "just run"
-    ☐ Runs its own container as opposed to WAR files
-    ☐ Spring Boot makes it easy to create stand-alone, production-grade Spring based Applications that you can "just run"
-    ☐  pom.xml: spring-boot-starter
+    ✔ extension to the Spring Framework Spring Boot makes it easy to create stand-alone, production-grade Spring based Applications that you can "just run" @done(23-09-11 10:47)
+    ✔ Runs its own container as opposed to WAR files @done(23-09-11 10:47)
+    ✔ Spring Boot makes it easy to create stand-alone, production-grade Spring based Applications that you can "just run" @done(23-09-12 06:11)
+    ✔ pom.xml: spring-boot-starter @done(23-09-12 06:11)
     @Component - generic stereotype for any Spring-managed component: 
-      ☐ @Repository - stereotype for persistence layer
-      ☐ @Service - stereotype for service layer
-      ☐ @Controller - stereotype for presentation layer (spring-mvc)
-      ☐ @RestController - stereotype for presentation layer (spring-mvc) - returns JSON
-      ☐ @Configuration - indicates that a class declares one or more @Bean methods and may be processed by the Spring container to generate bean definitions and service requests for those beans at runtime
-      ☐ @EnableAutoConfiguration - enable Spring Boot’s auto-configuration mechanism
-      @Autowired - I want an instance injected here
+      ✔ Aspect-oriented programming (AOP) is a programming paradigm that aims to increase modularity by allowing the separation of cross-cutting concerns. @done(23-09-11 10:47)
+      ✔ @Repository - stereotype for persistence layer @done(23-09-11 10:47)
+      ✔ @Service - stereotype for service layer @done(23-09-11 10:47)
+      ✔ @Controller - stereotype for presentation layer (spring-mvc) @done(23-09-11 10:48)
+      ✔ @RestController - stereotype for presentation layer (spring-mvc) - returns JSON @done(23-09-11 10:48)
+      ✔ @Configuration - indicates that a class declares one or more @Bean methods and may be processed by the Spring container to generate bean definitions and service requests for those beans at runtime @done(23-09-11 10:48)
+      ✔ @EnableAutoConfiguration - enable Spring Boot’s auto-configuration mechanism @done(23-09-11 10:48)
+      ✔ @Autowired - I want an instance injected here @done(23-09-11 10:48)
     ☐  mvnm spring-boot:run
     ☐ @SpringBootApplication annotation: @Configuration, @EnableAutoConfiguration, @ComponentScan
-      ☐ some properties still need to be provided like server names etc.
-      ☐ use can use @override to override the default values
-      ☐ java -jar target/myproject-0.0.1-SNAPSHOT.jar --debug to see what is being autoconfigured
+      ✔ some properties still need to be provided like server names etc. @done(23-09-11 10:48)
+      ✔ use can use @override to override the default values @done(23-09-11 10:48)
+      ✔ java -jar target/myproject-0.0.1-SNAPSHOT.jar --debug to see what is being autoconfigured @done(23-09-11 10:48)
   Lets build app bottom up all the way to controller:
-    ☐ Add @repository to the repository class (no persistence layer yet)
+    ✔ Add @repository to the repository class (no persistence layer yet) @done(23-09-11 14:12)
     Annotate to turn into rest controller:
-      ☐ @RestController
-      ☐ @RequestMapping("/questions") so you can omit path later on
-      ☐ @GetMapping("/questions") vs getQ@RequestMapping(method=RequestMethod.GET) {...}
-      ☐ @GetMapping(path="/questions/{id}") getQ(@PathVariable("id")) int id) {..}
-      ☐ @GetMapping(path="/questions") getQ(@RequestParam("id")) int id) {..}
-      ☐ General consideration - adopt a convention (uniform mapping or entity access)
-      ☐ @PostMapping Question createQuestion(@RequestBody Question question) {..}
-      ☐ Getting data in @RequestBody - JSON
-      ☐ Exercise: add POST and PUT to the controller
+      ✔ @RestController @done(23-09-11 14:12)
+      ✔ @RequestMapping("/questions") so you can omit path later on @done(23-09-11 14:12)
+      ✔ @GetMapping("/questions") vs getQ@RequestMapping(method=RequestMethod.GET) {...} @done(23-09-11 14:12)
+      ✔ @GetMapping(path="/questions/{id}") getQ(@PathVariable("id")) int id) {..} @done(23-09-11 14:12)
+      ✔ @GetMapping(path="/questions") getQ(@RequestParam("id")) int id) {..} @done(23-09-11 14:12)
+      ✔ General consideration - adopt a convention (uniform mapping or entity access) @done(23-09-11 14:12)
+      ✔ @PostMapping Question createQuestion(@RequestBody Question question) {..} @done(23-09-11 14:12)
+      ✔ Getting data in @RequestBody - JSON @done(23-09-11 14:12)
+      ✔ Exercise: add POST and PUT to the controller @done(23-09-11 14:12)
     Handling exceptions:
-      ☐ methodName throws KindOfException {..}
-      ☐ 500 - Internal Server Error not a proper way
+      ✔ methodName throws KindOfException {..} @done(23-09-11 14:12)
+      ✔ 500 - Internal Server Error not a proper way @done(23-09-11 14:12)
       ☐ return mathQuestionsRepo.findById(id).orElseThrow(() -> new NoSuchElementException(id));
-      ☐ @ExceptionHandler(KindOfException.class) public ErrorResponse handleException(NoSuchElementException ex) {..}
-        return ErrorResponse.create(ex, HttpStatus.NOT_FOUND, ex.getMessage());
+      ✔ @ExceptionHandler(KindOfException.class) public ErrorResponse handleException(NoSuchElementException ex) {..} @done(23-09-11 14:12)
+        ✔ return ErrorResponse.create(ex, HttpStatus.NOT_FOUND, ex.getMessage()); @done(23-09-11 14:12)
       Validation: 
-        ☐ spring-boot-validation dependency
-        ☐ @Valid @RequestBody Question question
+        ✔ spring-boot-validation dependency @done(23-09-11 14:12)
+        ✔ @Valid @RequestBody Question question @done(23-09-11 14:12)
         Domain annotations:
-        ☐ @NotNull(message = "Question is mandatory")
-        ☐ @Size(min = 2, message = "Question should have at least 2 characters")
-        ☐ @Size(max = 100, message = "Question should have at most 100 characters")
-        ☐ @Pattern(regexp = "[A-Za-z0-9 ]*", message = "Question has invalid characters")
-        ☐ @NotBlank(message = "Question cannot be blank")
-        ☐ Then you can throw ConstraintViolationException and handle it in the controller with the error response of type ErrorResponse HttpStatus.BAD_REQUEST
+        ✔ @NotNull(message = "Question is mandatory") @done(23-09-11 14:12)
+        ✔ @Size(min = 2, message = "Question should have at least 2 characters") @done(23-09-11 14:12)
+        ✔ @Size(max = 100, message = "Question should have at most 100 characters") @done(23-09-11 14:12)
+        ✔ @Pattern(regexp = "[A-Za-z0-9 ]*", message = "Question has invalid characters") @done(23-09-11 14:12)
+        ✔ @NotBlank(message = "Question cannot be blank") @done(23-09-11 14:12)
+        ✔ Then you can throw ConstraintViolationException and handle it in the controller with the error response of type ErrorResponse HttpStatus.BAD_REQUEST @done(23-09-11 14:12)
         
     Persistence:
-        ☐ core vs community Spring Data libs
-        ☐ CrudRepository 
-        ☐ public interface MathQuestionsRepo extends JpaRepository<Question, Integer> {..}
-        ☐ [or DBSpecificTypeRepository]
-        ☐ @Entity vs @Document
-          ☐ @Id in @Document are strings!
-          ☐ UUID is the most common type for @Id
-          ☐ @Entity - GeneratedValue(strategy = GenerationType.IDENTITY) for autoincrement for id
-        ☐ Declare your repo as above and Spring will autoconfigure it for you
-        ☐ findById, findAll, save, delete, deleteAll etc. will be autoconfigured if you follow convention
-        ☐ @Override if you want your own implementation
-        ☐ Exercise: add NoSQL persistence just for fun (we will not use it)
-        ☐ Sidenotes:
-            not much fun with RDMBS - initializing schema and data with profiles
-            ☐ Managing migrations with flyway
+        ✔ core vs community Spring Data libs @done(23-09-12 20:09)
+        ✔ CrudRepository @done(23-09-12 20:09)
+        ✔ public interface MathQuestionsRepo extends JpaRepository<Question, Integer> {..} @done(23-09-12 20:09)
+        ✔ [or DBSpecificTypeRepository] @done(23-09-12 20:09)
+        ✔ @Entity vs @Document @done(23-09-12 20:09)
+          ✔ @Id in @Document are strings! @done(23-09-12 20:09)
+          ✔ UUID is the most common type for @Id @done(23-09-12 20:09)
+          ✔ @Entity - GeneratedValue(strategy = GenerationType.IDENTITY) for autoincrement for id @done(23-09-12 20:10)
+        ✔ Declare your repo as above and Spring will autoconfigure it for you @done(23-09-12 20:10)
+        ✔ findById, findAll, save, delete, deleteAll etc. will be autoconfigured if you follow convention @done(23-09-12 20:10)
+        ✔ @Override if you want your own implementation @done(23-09-12 20:10)
+        ✔ Exercise: add NoSQL persistence just for fun (we will not use it) @done(23-09-12 20:10)
+        ✔ Sidenotes: @done(23-09-12 20:10)
+            ✔ not much fun with RDMBS - initializing schema and data with profiles @done(23-09-12 20:10)
+            ✔ Managing migrations with flyway @done(23-09-12 20:10)
     Configuring the app with externalized configuration:
-        ☐ application.properties in src/main/resources/application.yml 
-        ☐ mvn sprint-boot:run -Dspring-boot.run.profiles=localenv
+        ☐ application.properties in src/main/resources/application.yml
+        ✔ mvn sprint-boot:run -Dspring-boot.run.profiles=localenv @done(23-09-12 20:10)
+    Reactive programming:
+      ✔ Batch processing vs producer/consumer processing @done(23-09-12 20:10)
+      ✔ The concept of CompletableFuture (a promise of a value) @done(23-09-12 20:10)
+      ✔ The concept of Mono and Flux @done(23-09-12 20:10)
+      ✔ Blocking @done(23-09-12 20:10)
+
 
   Docker:
     Basic commands: 
-      docker run -it ubuntu bash
-      docker ps
-      docker ps -a
-      docker images
-      docker rm <container id>
-      docker rmi <image id>
-      docker run -d -p 8080:8080 --name myapp myapp
-      docker exec -it <container id> bash
-      docker stop <container id>
-      docker start <container id>
-      docker logs <container id>
-      docker build .
-      Layers
-    Buiulding:
-      ☐ mvn spring-boot:build-image
+      ✔ docker run -it ubuntu bash @done(23-09-12 20:10)
+      ✔ docker run mongo -d @done(23-09-12 20:10)
+      ✔ docker stop <container id> @done(23-09-12 20:10)
+      ✔ docker run -p 27017:27017 mongo @done(23-09-12 20:10)
+      ✔ docker ps @done(23-09-12 20:10)
+      ✔ docker ps -a @done(23-09-12 20:10)
+      ✔ docker images @done(23-09-12 20:10)
+      ✔ docker rm <container id> @done(23-09-12 20:10)
+      ✔ docker rmi <image id> @done(23-09-12 20:10)
+      ✔ docker run -d -p 8080:8080 --name myapp myapp @done(23-09-12 20:10)
+      ✔ docker exec -it <container id> bash @done(23-09-12 20:10)
+      ✔ docker stop <container id> @done(23-09-12 20:10)
+      ✔ docker start <container id>- @done(23-09-12 20:10)
+      ✔ docker logs <container id> @done(23-09-12 20:10)
+    Building:
       ☐ Create a Dockerfile
-        ☐ FROM openjdk:17-jdk-alpine
-        ☐ talk through the structure
+      ☐ FROM openjdk:17-jdk-alpine
+      ☐ talk through the structure
+      ☐ Docker build .
+      ☐ Docker build -t <name> .
+      ☐ Docker build -t <name>:<tag> .
+      ☐ Docker build -t <name>:<tag> -f <dockerfile name> .
+      ☐ Docker build -t <name>:<tag> -f <dockerfile name> --build-arg <arg name>=<arg value> .
+      ☐ Docker build -t <name>:<tag> -f <dockerfile name> --build-arg <arg name>=<arg value> --build-arg <arg name>=<arg value> .
+      ☐ Layers
+      ☐ mvn spring-boot:build-image
       ☐ tagging:
-        docker tag <image id> <acr url/<repo name>:<tag>
-        docker tag <image id> <dockerhub username>/<repo name>:latest
-        docker tag <image id> <dockerhub username>/<repo name>:$(git rev-parse --short HEAD)
-        docker push --all-tags <acr url/<repo name>
+          docker tag <image id> <acr url/<repo name>:<tag>
+          docker tag <image id> <dockerhub username>/<repo name>:latest
+          docker tag <image id> <dockerhub username>/<repo name>:$(git rev-parse --short HEAD)
+          docker push --all-tags <acr url/<repo name>
       ☐ Exercise: create script which builds, tags, and pushes to the registry
       ☐ Exercise: using "acr build" command
 
