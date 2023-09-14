@@ -5,9 +5,9 @@ metadata:
   namespace: green
 data:
     server.port: "8080"
-    spring.application.name: "EXAMINATOR"
-    spring.application.version: "0.0.1"
-    spring.application.environment: "green"
+    application.name: "EXAMINATOR"
+    application.version: "0.0.1"
+    application.environment: "green"
     services.math.url: "http://provider-math:8080"
     services.history.url: "http://provider-history:8080"
 ---
@@ -18,9 +18,9 @@ metadata:
   namespace: green
 data:
     server.port: "8080"
-    spring.application.name: "HISTORY"
-    spring.application.version: "0.0.1"
-    spring.application.environment: "green"
+    application.name: "HISTORY"
+    application.version: "0.0.1"
+    application.environment: "green"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -29,9 +29,9 @@ metadata:
   name: math-config
 data:
   server.port: "8080"
-  spring.application.name: "MATH"
-  spring.application.version: "0.0.1"
-  spring.application.environment: "green"
+  application.name: "MATH"
+  application.version: "0.0.1"
+  application.environment: "green"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -48,10 +48,18 @@ spec:
       labels:
         name: backend-green-examinator
     spec:
+
       containers:
         - name: exam-provider-container
           image: provider-examinator:kubernetes
           imagePullPolicy: Never
+          resources:
+            requests:
+              memory: "256Mi"    # Request 256 megabytes of memory
+              cpu: "0.5"         # Request 0.5 CPU cores
+            limits:
+              memory: "512Mi"    # Limit memory usage to 512 megabytes
+              cpu: "1"           # Limit CPU usage to 1 CPU core
           ports:
             - containerPort: 8080
           env:
@@ -60,22 +68,22 @@ spec:
                 configMapKeyRef:
                   name: examinator-config
                   key: server.port
-            - name: SPRING_APPLICATION_NAME
+            - name: APPLICATION_NAME
               valueFrom:
                   configMapKeyRef:
                     name: examinator-config
-                    key: spring.application.name
-            - name: SPRING_APPLICATION_VERSION
+                    key: application.name
+            - name: APPLICATION_VERSION
               valueFrom:
                   configMapKeyRef:
                       name: examinator-config
-                      key: spring.application.version
+                      key: application.version
 
-            - name: SPRING_APPLICATION_ENVIRONMENT
+            - name: APPLICATION_ENVIRONMENT
               valueFrom:
                   configMapKeyRef:
                       name: examinator-config
-                      key: spring.application.environment
+                      key: application.environment
             - name: SERVICES_MATH_URL
               valueFrom:
                   configMapKeyRef:
@@ -116,21 +124,21 @@ spec:
                 configMapKeyRef:
                   name: math-config
                   key: server.port
-            - name: SPRING_APPLICATION_NAME
+            - name: APPLICATION_NAME
               valueFrom:
                   configMapKeyRef:
                       name: math-config
-                      key: spring.application.name
-            - name: SPRING_APPLICATION_VERSION
+                      key: application.name
+            - name: APPLICATION_VERSION
               valueFrom:
                   configMapKeyRef:
                       name: math-config
-                      key: spring.application.version
-            - name: SPRING_APPLICATION_ENVIRONMENT
+                      key: application.version
+            - name: APPLICATION_ENVIRONMENT
               valueFrom:
                   configMapKeyRef:
                       name: math-config
-                      key: spring.application.environment
+                      key: application.environment
 
 ---
 apiVersion: apps/v1
@@ -160,21 +168,21 @@ spec:
                 configMapKeyRef:
                   name: history-config
                   key: server.port
-            - name: SPRING_APPLICATION_NAME
+            - name: APPLICATION_NAME
               valueFrom:
                   configMapKeyRef:
                       name: history-config
-                      key: spring.application.name
-            - name: SPRING_APPLICATION_VERSION
+                      key: application.name
+            - name: APPLICATION_VERSION
               valueFrom:
                   configMapKeyRef:
                       name: history-config
-                      key: spring.application.version
-            - name: SPRING_APPLICATION_ENVIRONMENT
+                      key: application.version
+            - name: APPLICATION_ENVIRONMENT
               valueFrom:
                   configMapKeyRef:
                       name: history-config
-                      key: spring.application.environment
+                      key: application.environment
 
 ---
 apiVersion: v1

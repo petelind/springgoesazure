@@ -1,4 +1,4 @@
-FROM openjdk:17-jdk-slim-buster
+FROM alpine:latest
 
 ARG JAR_FILE
 ADD ${JAR_FILE} /opt/app.jar
