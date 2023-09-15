@@ -15,7 +15,7 @@ Spring Boot:
       ✔ @Configuration - indicates that a class declares one or more @Bean methods and may be processed by the Spring container to generate bean definitions and service requests for those beans at runtime @done(23-09-11 10:48)
       ✔ @EnableAutoConfiguration - enable Spring Boot’s auto-configuration mechanism @done(23-09-11 10:48)
       ✔ @Autowired - I want an instance injected here @done(23-09-11 10:48)
-    ☐  mvnm spring-boot:run
+    ✔  mvnm spring-boot:run @done(23-09-13 09:00)
     ☐ @SpringBootApplication annotation: @Configuration, @EnableAutoConfiguration, @ComponentScan
       ✔ some properties still need to be provided like server names etc. @done(23-09-11 10:48)
       ✔ use can use @override to override the default values @done(23-09-11 10:48)
@@ -92,59 +92,102 @@ Spring Boot:
       ✔ docker start <container id>- @done(23-09-12 20:10)
       ✔ docker logs <container id> @done(23-09-12 20:10)
     Building:
-      ☐ Create a Dockerfile
-      ☐ FROM openjdk:17-jdk-alpine
-      ☐ talk through the structure
-      ☐ Docker build .
-      ☐ Docker build -t <name> .
-      ☐ Docker build -t <name>:<tag> .
-      ☐ Docker build -t <name>:<tag> -f <dockerfile name> .
-      ☐ Docker build -t <name>:<tag> -f <dockerfile name> --build-arg <arg name>=<arg value> .
-      ☐ Docker build -t <name>:<tag> -f <dockerfile name> --build-arg <arg name>=<arg value> --build-arg <arg name>=<arg value> .
-      ☐ Layers
-      ☐ mvn spring-boot:build-image
-      ☐ tagging:
+      ✔ Create a Dockerfile @done(23-09-13 20:05)
+      ✔ FROM openjdk:17-jdk-alpine @done(23-09-13 20:05)
+      ✔ talk through the structure @done(23-09-13 20:05)
+      ✔ Docker build . @done(23-09-13 20:05)
+      ✔ Docker build -t <name> . @done(23-09-13 20:05)
+      ✔ Docker build -t <name>:<tag> . @done(23-09-13 20:05)
+      ✔ Docker build @done(23-09-13 20:05)
+      ✔ -t <name>:<tag> -f <dockerfile name> . @done(23-09-13 20:05)
+      ✔ Docker build -t <name>:<tag> -f <dockerfile name> --build-arg <arg name>=<arg value> . @done(23-09-13 20:05)
+      ✔ Docker build -t <name>:<tag> -f <dockerfile name> --build-arg <arg name>=<arg value> --build-arg <arg name>=<arg value> . @done(23-09-13 20:05)
+      ✔ Layers @done(23-09-13 20:05)
+      ✔ mvn spring-boot:build-image @done(23-09-13 20:05)
+      ✔ tagging: @done(23-09-13 20:05)
           docker tag <image id> <acr url/<repo name>:<tag>
           docker tag <image id> <dockerhub username>/<repo name>:latest
           docker tag <image id> <dockerhub username>/<repo name>:$(git rev-parse --short HEAD)
           docker push --all-tags <acr url/<repo name>
-      ☐ Exercise: create script which builds, tags, and pushes to the registry
-      ☐ Exercise: using "acr build" command
+      ✔ Exercise: create script which builds, tags, and pushes to the registry @done(23-09-13 20:05)
+      ✔ Exercise: using "acr build" command @done(23-09-13 20:05)
 
   Kubernetes:
     Core concepts:
-        ☐ Core services: API Server, Scheduler, Controller Manager, etcd
-        ☐ Cluster and its edge
-        ☐ Nodes
-        ☐ Pods
-        ☐ ReplicaSets
-        ☐ Deployments
-        ☐ Services
-            ☐ Labels and selectors
-        ☐ Ingress
-        ☐ ConfigMaps
-        ☐ Secrets
-        ☐ Namespaces
-        ☐ /api/ and talking to it
-        ☐ Exercise: deploy our app
+        ✔ Core services: API Server, Scheduler, Controller Manager, etcd @done(23-09-15 08:17)
+        ✔ Cluster and its edge @done(23-09-15 08:17)
+        ✔ Nodes @done(23-09-15 08:17)
+        ✔ Pods @done(23-09-15 08:17)
+        ✔ ReplicaSets @done(23-09-15 08:17)
+        ✔ Deployments @done(23-09-15 08:17)
+        ✔ Services @done(23-09-15 08:17)
+            ✔ Labels and selectors @done(23-09-15 08:17)
+        ✔ Ingress @done(23-09-15 08:17)
+        ✔ ConfigMaps @done(23-09-15 08:17)
+        ✔ Secrets @done(23-09-15 08:17)
+        ✔ Namespaces @done(23-09-15 08:17)
+        ✔ /api/ and talking to it @done(23-09-15 08:17)
+        ✔ Exercise: deploy our app @done(23-09-15 08:17)
     Running local:
-      Deploying imperative way
-        kubectl apply -f <yaml file>
+      Deploying imperative way:
+        kubectl get pods --namespace kube-system
+        kubectl create namespace dumbapp
+        kubectl config set-context --current --namespace=dumbapp
+        sudo lsof -i :80
+        kubectl create deployment dumbapp-deployment --image=manojnair/myapp:v1 --port=80
+        kubectl get deployments
+        kubectl describe deployment <name>
+        kubectl expose deployment dumbapp-deployment --name dumbapp-service --type=ClusterIP --port=80 --target-port=80
+        kubectl expose service dumbapp-deployment --name dumbapp-endpoint --type=LoadBalancer --port=80 --target-port=80
+        kubectl get svc --watch
+        sudo kubectl port-forward service/<name> 80:80 *) How to make it work :)
+        kubectl create configmap <name> --from-literal=<key>=<value>
+        kubectl create configmap <name> --from-file=<path>
         kubectl get pods
         kubectl get pods -o wide
-        kubectl create deployment <name> --image=<image>
-        kubectl get deployments
-        kubectl create service --type=NodePort <name> --tcp=8080:8080
+        kubectl logs <name>
+        kubectl scale deployment <name> --replicas=10
+        kubectl edit deployment <name> --record=true
+        kubectl rollout history deployment/<name>
+        kubectl rollout undo deployment/<name>
+        kubectl rollout undo deployment/<name> --to-revision=X
+        Exercise: kill a pod, see what happens: kubectl delete pod <pod name>
+
     Declarative VS imperative:
       ☐ Deploying declarative (not really) way with YAML
       Exercise: deploy with YAML
-        Exercise: add a config map
-        Exercise: add a deployment for each service
-        Exercise: add a service for each deployment
-        Exercise: add an ingress & why do we need port forwarding
+        kubectl create deployment <name> --image=<image> --dry-run=client -o yaml > deployment.yaml
+        kubectl edit deployment <name>
+        Attention: pull policy = Never
+        ☐ Exercise: add a config map
+        ☐ Exercise: add a deployment for each service
+        ☐ Exercise: add a service for each deployment
+        ☐ Exercise: expose the service / deployment
+        OR
+        ☐ Exercise: or find an error
+        kubectl run -it --rm --image=curlimages/curl curly -- sh
+        ☐ Exercise: enable health checks
+        ☐ Exercise: Implement a custom health check
+        ☐ WARNING: pitfalls of health checks
+    
+    Azure:
+      Design considerations:
+        ☐ Complexity of your solution: exponential vs logarithmic
+        ☐ SPSTC(p)W: Simplest possible solution that could (possibly) work
+        ☐ Locality
+        ☐ Availability
+        ☐ Security and the attack surface
+        ☐ Maintainability: do we need a Caterpillar truck?
+      Core styles and entities:
+        ☐ IaaS VS PaaS vs SaaS
+        ☐ CaaS: retain some independence
+
     Running in AKS:
       ☐ Go through playbook
-      ☐ Exercise: kill a pod, see what happens
+      ☐ Moving role definitions into separate deployment.yaml
+      ☐ Attention: pull policy = Always!
+      
+
     Scaling:
       ☐ Manual and Auto
       ☐ Exercise: bring up more replicas
@@ -167,17 +210,7 @@ Spring Boot:
       ☐ DNS - A-names for blue and green, CNAME for the app
       ☐ Traffic Manager
       ☐ Front Door
-  Azure:
-    Design considerations:
-      Complexity of your solution: exponential vs logarithmic
-      SPSTC(p)W: Simplest possible solution that could (possibly) work
-      ☐ Locality
-      Availability
-      Security and the attack surface
-      Maintainability: do we need a Caterpillar truck?
-    Core styles and entities:
-      IaaS VS PaaS vs SaaS
-      CaaS: retain some independence
+  
 
   CosmosDB:
     Relational vs NoSQL vs Graph
