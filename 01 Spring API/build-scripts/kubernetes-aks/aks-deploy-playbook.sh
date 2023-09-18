@@ -52,7 +52,7 @@ kubectl config set-context --current --namespace=green
 #Create a Deployment, ClusterIP Service, and Ingress to access our application via AppGW
 #Look into the file for examples of deployments, services, configmaps etc.
 sed -i "s|image: azspringapiacr1.azurecr.io|image: $ACRNAME.azurecr.io|g" deployment-aks.yaml
-c
+
 
 # alternate way to expose is via l3 ingress - LoadBalancer
 #kubectl expose deployment backend-examinator-deployment --name=l3balancer --type=LoadBalancer --port=80 --target-port 8080

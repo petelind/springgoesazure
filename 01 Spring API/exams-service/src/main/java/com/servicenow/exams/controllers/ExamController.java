@@ -132,9 +132,6 @@ public class ExamController {
         });
     }
 
-
-
-
     @DeleteMapping("/exams/all")
     public void deleteAllExams() {
         examRepository.deleteAll();
