@@ -12,6 +12,28 @@ services:
   history:
       url: http://localhost:8082
 
+
+management:
+  probes:
+    enabled: true
+  endpoint:
+    health:
+      group:
+        readiness:
+          show-components: always
+        liveness:
+          show-components: always
+        custom:
+          show-components: always # Show the custom health check in the /actuator/health response
+      show-details: always
+      show-values: always
+  endpoints:
+    web:
+      exposure:
+        include: health,liveness,readiness,info,metrics,conditions,mappings,loggers,beans
+        exclude: heapdump,threaddump,env
+
+
 springdoc:
   api-docs:
     enabled: true

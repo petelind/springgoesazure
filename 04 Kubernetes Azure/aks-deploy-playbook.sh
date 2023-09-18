@@ -77,7 +77,7 @@ kubectl get ingress --watch
 export INGRESSIP=$(kubectl get ingress -o jsonpath='{ .items[].status.loadBalancer.ingress[].ip }')
 echo $INGRESSIP
 curl http://$INGRESSIP
-kubectl run -it --rm --image=curlimages/curl curly -- sh
+#kubectl run -it --rm --image=curlimages/curl curly -- sh
 
 ##Our ingress controller is a pod running in the cluster...
 ###monitoring for ingress resources and updating the configuration of the AppGW

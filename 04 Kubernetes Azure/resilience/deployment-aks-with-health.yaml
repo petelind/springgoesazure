@@ -121,7 +121,6 @@ spec:
             httpGet:
               port: 8080
               path: /actuator/health/readiness
-
 ---
 apiVersion: apps/v1
 kind: Deployment

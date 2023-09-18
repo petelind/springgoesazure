@@ -16,7 +16,7 @@ Spring Boot:
       ✔ @EnableAutoConfiguration - enable Spring Boot’s auto-configuration mechanism @done(23-09-11 10:48)
       ✔ @Autowired - I want an instance injected here @done(23-09-11 10:48)
     ✔  mvnm spring-boot:run @done(23-09-13 09:00)
-    ☐ @SpringBootApplication annotation: @Configuration, @EnableAutoConfiguration, @ComponentScan
+    ✔ @SpringBootApplication annotation: @Configuration, @EnableAutoConfiguration, @ComponentScan @done(23-09-18 08:32)
       ✔ some properties still need to be provided like server names etc. @done(23-09-11 10:48)
       ✔ use can use @override to override the default values @done(23-09-11 10:48)
       ✔ java -jar target/myproject-0.0.1-SNAPSHOT.jar --debug to see what is being autoconfigured @done(23-09-11 10:48)
@@ -35,7 +35,7 @@ Spring Boot:
     Handling exceptions:
       ✔ methodName throws KindOfException {..} @done(23-09-11 14:12)
       ✔ 500 - Internal Server Error not a proper way @done(23-09-11 14:12)
-      ☐ return mathQuestionsRepo.findById(id).orElseThrow(() -> new NoSuchElementException(id));
+      ✔ return mathQuestionsRepo.findById(id).orElseThrow(() -> new NoSuchElementException(id)); @done(23-09-18 08:32)
       ✔ @ExceptionHandler(KindOfException.class) public ErrorResponse handleException(NoSuchElementException ex) {..} @done(23-09-11 14:12)
         ✔ return ErrorResponse.create(ex, HttpStatus.NOT_FOUND, ex.getMessage()); @done(23-09-11 14:12)
       Validation: 
@@ -66,7 +66,7 @@ Spring Boot:
             ✔ not much fun with RDMBS - initializing schema and data with profiles @done(23-09-12 20:10)
             ✔ Managing migrations with flyway @done(23-09-12 20:10)
     Configuring the app with externalized configuration:
-        ☐ application.properties in src/main/resources/application.yml
+        ✔ application.properties in src/main/resources/application.yml @done(23-09-18 08:32)
         ✔ mvn sprint-boot:run -Dspring-boot.run.profiles=localenv @done(23-09-12 20:10)
     Reactive programming:
       ✔ Batch processing vs producer/consumer processing @done(23-09-12 20:10)
@@ -105,10 +105,10 @@ Spring Boot:
       ✔ Layers @done(23-09-13 20:05)
       ✔ mvn spring-boot:build-image @done(23-09-13 20:05)
       ✔ tagging: @done(23-09-13 20:05)
-          docker tag <image id> <acr url/<repo name>:<tag>
-          docker tag <image id> <dockerhub username>/<repo name>:latest
-          docker tag <image id> <dockerhub username>/<repo name>:$(git rev-parse --short HEAD)
-          docker push --all-tags <acr url/<repo name>
+          ✔ docker tag <image id> <acr url/<repo name>:<tag> @done(23-09-18 08:32)
+          ✔ docker tag <image id> <dockerhub username>/<repo name>:latest @done(23-09-18 08:32)
+          ✔ docker tag <image id> <dockerhub username>/<repo name>:$(git rev-parse --short HEAD) @done(23-09-18 08:32)
+          ✔ docker push --all-tags <acr url/<repo name> @done(23-09-18 08:32)
       ✔ Exercise: create script which builds, tags, and pushes to the registry @done(23-09-13 20:05)
       ✔ Exercise: using "acr build" command @done(23-09-13 20:05)
 
@@ -129,80 +129,85 @@ Spring Boot:
         ✔ /api/ and talking to it @done(23-09-15 08:17)
         ✔ Exercise: deploy our app @done(23-09-15 08:17)
     Running local:
-      Deploying imperative way:
-        kubectl get pods --namespace kube-system
-        kubectl create namespace dumbapp
-        kubectl config set-context --current --namespace=dumbapp
-        sudo lsof -i :80
-        kubectl create deployment dumbapp-deployment --image=manojnair/myapp:v1 --port=80
-        kubectl get deployments
-        kubectl describe deployment <name>
-        kubectl expose deployment dumbapp-deployment --name dumbapp-service --type=ClusterIP --port=80 --target-port=80
-        kubectl expose service dumbapp-deployment --name dumbapp-endpoint --type=LoadBalancer --port=80 --target-port=80
-        kubectl get svc --watch
-        sudo kubectl port-forward service/<name> 80:80 *) How to make it work :)
-        kubectl create configmap <name> --from-literal=<key>=<value>
-        kubectl create configmap <name> --from-file=<path>
-        kubectl get pods
-        kubectl get pods -o wide
-        kubectl logs <name>
-        kubectl scale deployment <name> --replicas=10
-        kubectl edit deployment <name> --record=true
-        kubectl rollout history deployment/<name>
-        kubectl rollout undo deployment/<name>
-        kubectl rollout undo deployment/<name> --to-revision=X
-        Exercise: kill a pod, see what happens: kubectl delete pod <pod name>
+      ✔ Deploying imperative way: @done(23-09-18 08:31)
+        ✔ kubectl get pods --namespace kube-system @done(23-09-18 08:32)
+        ✔ kubectl create namespace dumbapp @done(23-09-18 08:32)
+        ✔ kubectl config set-context --current --namespace=dumbapp @done(23-09-18 08:32)
+        ✔ kubectl config view --minify | grep namespace: @done(23-09-18 08:32)
+        ✔ sudo lsof -i :80 @done(23-09-18 08:32)
+        ✔ kubectl create deployment dumbapp-deployment --image=manojnair/myapp:v1 --port=80 @done(23-09-18 08:32)
+        ✔ kubectl get deployments @done(23-09-18 08:32)
+        ✔ kubectl describe deployment <name> @done(23-09-18 08:32)
+        ✔ kubectl expose deployment dumbapp-deployment --name dumbapp-service --type=ClusterIP --port=80 --target-port=80 @done(23-09-18 08:32)
+        ✔ kubectl expose service dumbapp-service --name dumbapp-endpoint --type=LoadBalancer --port=80 --target-port=80 @done(23-09-18 08:32)
+        ✔ kubectl get svc --watch @done(23-09-18 08:32)
+        ✔ sudo kubectl port-forward service/<name> 80:80 *) How to make it work :) @done(23-09-18 08:32)
+        ✔ kubectl create configmap <name> --from-literal=<key>=<value> @done(23-09-18 08:32)
+        ✔ kubectl create configmap <name> --from-file=<path> @done(23-09-18 08:32)
+        ✔ kubectl get pods @done(23-09-18 08:32)
+        ✔ kubectl get pods -o wide @done(23-09-18 08:32)
+        ✔ kubectl logs <name> @done(23-09-18 08:32)
+        ✔ kubectl scale deployment <name> --replicas=10 @done(23-09-18 08:32)
+        ✔ kubectl scale deployment <name> --node-count=3 @done(23-09-18 08:32)
+        ✔ kubectl edit deployment <name> --record=true @done(23-09-18 08:32)
+        ✔ kubectl rollout history deployment/<name> @done(23-09-18 08:32)
+        ✔ kubectl rollout undo deployment/<name>sudo @done(23-09-18 08:32)
+        ✔ kubectl rollout undo deployment/<name> --to-revision=X @done(23-09-18 08:32)
+        ✔ Exercise: kill a pod, see what happens: kubectl delete pod <pod name>kubect @done(23-09-18 08:32)
 
-    Declarative VS imperative:
-      ☐ Deploying declarative (not really) way with YAML
-      Exercise: deploy with YAML
-        kubectl create deployment <name> --image=<image> --dry-run=client -o yaml > deployment.yaml
-        kubectl edit deployment <name>
-        Attention: pull policy = Never
-        ☐ Exercise: add a config map
-        ☐ Exercise: add a deployment for each service
-        ☐ Exercise: add a service for each deployment
-        ☐ Exercise: expose the service / deployment
+    ✔ Declarative VS imperative: @done(23-09-18 08:31)
+      ✔ Deploying declarative (not really) way with YAML @done(23-09-18 08:31)
+      ✔ Exercise: deploy with YAML @done(23-09-18 08:31)
+        ✔ kubectl create deployment <name> --image=<image> --dry-run=client -o yaml > deployment.yaml @done(23-09-18 08:32)
+        ✔ kubectl edit deployment <name> @done(23-09-18 08:32)
+        ✔ Attention: pull policy = Never @done(23-09-18 08:32)
+        ✘ Exercise: add a config map @cancelled(23-09-18 08:32)
+        ✘ Exercise: add a deployment for each service @cancelled(23-09-18 08:32)
+        ✘ Exercise: add a service for each deployment @cancelled(23-09-18 08:32)
+        ✘ Exercise: expose the service / deployment @cancelled(23-09-18 08:32)
         OR
-        ☐ Exercise: or find an error
-        kubectl run -it --rm --image=curlimages/curl curly -- sh
-        ☐ Exercise: enable health checks
-        ☐ Exercise: Implement a custom health check
-        ☐ WARNING: pitfalls of health checks
+        ✔ Exercise: or find an error @done(23-09-18 08:31)
+        ✔ kubectl run -it --rm --image=curlimages/curl curly -- sh @done(23-09-18 08:31)
+        ✔ Exercise: enable health checks @done(23-09-18 08:31)
+        ✔ Exercise: Implement a custom health check @done(23-09-18 08:31)
+        ✔ WARNING: pitfalls of health checks @done(23-09-18 08:31)
     
     Azure:
       Design considerations:
-        ☐ Complexity of your solution: exponential vs logarithmic
+        ✔ Complexity of your solution: exponential vs logarithmic @done(23-09-18 08:56)
         ☐ SPSTC(p)W: Simplest possible solution that could (possibly) work
         ☐ Locality
         ☐ Availability
         ☐ Security and the attack surface
+          ☐ Public vs private endpoints
+          ☐ VNets
+          ☐ Application gateways 
         ☐ Maintainability: do we need a Caterpillar truck?
       Core styles and entities:
-        ☐ IaaS VS PaaS vs SaaS
-        ☐ CaaS: retain some independence
+        ✔ IaaS VS PaaS vs SaaS @done(23-09-18 08:29)
+        ✔ CaaS: retain some independence @done(23-09-18 08:29)
 
     Running in AKS:
       ☐ Go through playbook
+      ☐ Go through deployment.yaml - enabling access
       ☐ Moving role definitions into separate deployment.yaml
-      ☐ Attention: pull policy = Always!
-      
 
     Scaling:
       ☐ Manual and Auto
+      Self-healing:
+        ☐ Actuator
+        ☐ Liveness and readiness probes
       ☐ Exercise: bring up more replicas
         kubectl scale <deployment name> --replicas=X
         kubectl scale --name <cluster> --node-count=X
-      ☐ Exercise: set up autoscaling
-    Self-healing:
-      ☐ Actuator
-      ☐ Liveness and readiness probes
-
+        az aks scale --resource-group <resource-group-name> --name <aks-cluster-name> --node-count X
+      ☐ Exercise: set up autoscaling with new application.yaml
+    
     Release strategy:
-    ☐ Using kubectl edit <resource> --record=true
-      ☐ kubectl rollout history <resourcetype>/name
-      ☐ Roll back - kubectl rollout undo <resource>
-      ☐ Roll back - kubectl rollout undo <resource> --to-revision=X
+    ✔ Using kubectl edit <resource> --record=true @done(23-09-18 08:55)
+      ✔ kubectl rollout history <resourcetype>/name @done(23-09-18 08:55)
+      ✔ Roll back - kubectl rollout undo <resource> @done(23-09-18 08:56)
+      ✔ Roll back - kubectl rollout undo <resource> --to-revision=X @done(23-09-18 08:56)
     ☐ Using selectors & labels
     ☐ Using clusters (repaving)
     ☐ Using namespaces
