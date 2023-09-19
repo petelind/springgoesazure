@@ -2,9 +2,9 @@
 
 # set app version to 0.0.1-SNAPSHOT; just so we can see what we have built
 export APP_VERSION=0.0.1-SNAPSHOT
-export RGNAME=AZSpringAPI2
+export RGNAME=AZSpringAPIDENIS
 ## Todo: add few random numbers to registry name to make it globally unique
-export ACRNAME=azspringapiacr2
+export ACRNAME=azspringapiacr3
 
 # Deploy a cluster with an AppGW Ingress Controller for exam API access
 az group create --name $RGNAME --location centralus
@@ -56,7 +56,7 @@ sed -i "s|image: azspringapiacr1.azurecr.io|image: $ACRNAME.azurecr.io|g" deploy
 
 # alternate way to expose is via l3 ingress - LoadBalancer
 #kubectl expose deployment backend-examinator-deployment --name=l3balancer --type=LoadBalancer --port=80 --target-port 8080
-
+kubectl apply -f deployment-aks.yaml
 
 ##Our current application is running on three pods
 kubectl get pods -o wide
@@ -69,6 +69,7 @@ kubectl get ingress --watch
 ##Access the application via the exposed ingress on the public IP
 export INGRESSIP=$(kubectl get ingress -o jsonpath='{ .items[].status.loadBalancer.ingress[].ip }')
 echo $INGRESSIP
+az dns record-set a add-record -g $RGNAME -z azspringapi.com -n "*" --ttl 60 --ipv4-address $INGRESSIP
 curl http://$INGRESSIP
 
 # Local troubleshooting:
