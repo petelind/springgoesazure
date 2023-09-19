@@ -76,7 +76,7 @@ spec:
     spec:
       containers:
         - name: exam-provider-container
-          image: azspringapiacr1.azurecr.io/provider-examinator:latest
+          image: azspringapiacr3.azurecr.io/provider-examinator:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
@@ -132,7 +132,7 @@ spec:
     spec:
       containers:
         - name: provider-math-container
-          image: azspringapiacr1.azurecr.io/provider-math:latest
+          image: azspringapiacr3.azurecr.io/provider-math:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
@@ -176,7 +176,7 @@ spec:
     spec:
       containers:
         - name: provider-history-container
-          image: azspringapiacr1.azurecr.io/provider-history:latest
+          image: azspringapiacr3.azurecr.io/provider-history:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
