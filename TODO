@@ -175,71 +175,180 @@ Spring Boot:
     Azure:
       Design considerations:
         ✔ Complexity of your solution: exponential vs logarithmic @done(23-09-18 08:56)
-        ☐ SPSTC(p)W: Simplest possible solution that could (possibly) work
-        ☐ Locality
-        ☐ Availability
-        ☐ Security and the attack surface
-          ☐ Public vs private endpoints
-          ☐ VNets
-          ☐ Application gateways 
-        ☐ Maintainability: do we need a Caterpillar truck?
+        ✔ SPSTC(p)W: Simplest possible solution that could (possibly) work @done(23-09-18 17:00)
+        ✔ Locality @done(23-09-18 17:00)
+        ✔ Availability @done(23-09-18 17:01)
+        ✔ Security and the attack surface @done(23-09-18 17:01)
+          ✔ Public vs private endpoints @done(23-09-18 17:01)
+          ✔ VNets @done(23-09-18 17:01)
+          ✔ Application gateways @done(23-09-18 17:01)
+        ✔ Maintainability: do we need a Caterpillar truck? @done(23-09-18 17:01)
       Core styles and entities:
         ✔ IaaS VS PaaS vs SaaS @done(23-09-18 08:29)
         ✔ CaaS: retain some independence @done(23-09-18 08:29)
 
     Running in AKS:
-      ☐ Go through playbook
-      ☐ Go through deployment.yaml - enabling access via roles
-      ☐ Moving role definitions into separate deployment.yaml
+      ✔ Go through playbook @done(23-09-18 17:57)
+      ✔ Go through deployment.yaml - enabling access via roles @done(23-09-18 17:57)
+      ✔ Moving role definitions into separate deployment.yaml @done(23-09-18 17:57)
 
     Scaling:
-      ☐ Manual and Auto
+      ✔ Manual and Auto @done(23-09-18 15:12)
       Self-healing:
-        ☐ Actuator
-        ☐ Liveness and readiness
-          ☐ Default: container exit codes, immediate 
-          Proper: health checks, check periods & delay
-        ☐ Health checks in YAML
+        ✔ Actuator @done(23-09-18 15:12)
+        ✔ Liveness and readiness @done(23-09-18 15:12)
+          ✔ Default: container exit codes, immediate @done(23-09-18 15:12)
+          ✔ Proper: health checks, check periods & delay @done(23-09-18 15:13)
+        ✔ Health checks in YAML @done(23-09-18 15:13)
         Scaling with metrics:
-        ☐ CPU
-        ☐ Memory
-        ☐ Custom metrics
-      ☐ Exercise: bring up more replicas
-        kubectl scale <deployment name> --replicas=X
-        kubectl scale --name <cluster> --node-count=X
-        az aks scale --resource-group <resource-group-name> --name <aks-cluster-name> --node-count X
-      ☐ Exercise: set up autoscaling with new hpa.yaml
+        ✔ CPU @done(23-09-18 15:13)
+        ✔ Memory @done(23-09-18 15:13)
+        ✔ Custom metrics @done(23-09-18 15:13)
+      ✔ Exercise: bring up more replicas @done(23-09-18 15:13)
+        ✔ kubectl scale <deployment name> --replicas=X @done(23-09-18 15:13)
+        ✔ kubectl scale --name <cluster> --node-count=X @done(23-09-18 15:13)
+        ✔ az aks scale --resource-group <resource-group-name> --name <aks-cluster-name> --node-count X @done(23-09-18 17:57)
+      ✔ Exercise: set up autoscaling with new hpa.yaml @done(23-09-18 17:57)
     
     Release strategy:
-    ✔ Using kubectl edit <resource> --record=true @done(23-09-18 08:55)
-      ✔ kubectl rollout history <resourcetype>/name @done(23-09-18 08:55)
-      ✔ Roll back - kubectl rollout undo <resource> @done(23-09-18 08:56)
-      ✔ Roll back - kubectl rollout undo <resource> --to-revision=X @done(23-09-18 08:56)
-    ☐ Using selectors & labels
-    ☐ Using clusters (repaving)
-    ☐ Using namespaces
+      ✔ Using kubectl edit <resource> --record=true @done(23-09-18 08:55)
+        ✔ kubectl rollout history <resourcetype>/name @done(23-09-18 08:55)
+        ✔ Roll back - kubectl rollout undo <resource> @done(23-09-18 08:56)
+        ✔ Roll back - kubectl rollout undo <resource> --to-revision=X @done(23-09-18 08:56)
+      ✔ Using selectors & labels @done(23-09-18 17:57)
+      ✔ Using clusters (repaving) @done(23-09-18 17:57)
+      ✔ Using namespaces @done(23-09-18 17:57)
     Publishing:
-      ☐ DNS - A-names for blue and green, CNAME for the app
+      ✔ DNS - A-names for blue and green, CNAME for the app @done(23-09-18 17:57)
       ☐ Traffic Manager
       ☐ Front Door
-  
 
   CosmosDB:
     Relational vs NoSQL vs Graph
-    Gremlin interface
+      In the end all boils down to the hash table - so can we just use it?
+    Gremlin interface vs NoSQL interface
+    RUs = CPU + IOPS + mem for 1KB on READ:
+      3X on upserts/inserts
+      unknown for queries (query -> query stats -> RUs)
+      Capacity Calculator
+    Throughput:
+      DB or container level
+      Provisioned (be aware of 429 THROTTLED)
+      Autoscale
+      Serverless
+    Design considerations:
+      General concept - its a dict of dicts
+        Embedded dicts-leafs cannot be bigger than 2MB
+        Fill factor  = target 0.8
+        Partition key: high cardinality (unique but not too unique); 20GB limit per partition 
+        Avoid hot partitions (date vs datetime vs timestamp)
+        Small items
+        No joins: you can embed!
+          Embed:
+            1:1 yes (Contact got an address)
+            1:N if updated together (Contact got individual permissions)
+            N:N no! (Contact got memberships in many Groups instead of individual permissions)
+            Embedding with Change Feed: traversal.emit() and @Service @Async @Scheduled(FixedRate=1000)
+        Exercise: we have Product and ProductCategory - how to embed?
+          We aim to handle Products! Need complex queries/analytics? Connect Synapse!    
+        Use projections - ask for what you need
+        Indexing: avoid cross-partition ("fan-out") queries (thats why index is all-spanning by default)
+          Search vs scan
+          If fan-out is unavoidable (its OK) - use indexes
+        Make common case fast: index for what you gonna query
+        Indexing: include/exclude paths
+          Inlcude: everything in /* except /_attachments
+          Exclude: everything in [] except those you query often
+        Precision matters:
+          /headquarters/usa/wa/* exclude kind of supposed to skip...
+          /headquarters/usa/wa/redmond/* include will index nevetheless
     Geo-replication
+        Multi-master (write anywhere); can be disabled
+        LWW: last write wins
+        No versioning (but you can implement via custom resolution)
     Consistency levels
-    Partitioning: how to choose the key
-    Indexing:
-    Scaling: provisioned VS serverless
+      Strong
+      Bound staleness: strong within same region with writes, eventual across regions with K or T
+      Session: strong within same session (var client with his pool, that is), eventual across sessions
+      Prefix: other regions never receive writes out-of-order
+      Eventual: no guarantees (including order) whatsoever; client may end up seeing OLDER records
+      Can be specified per query!
     Accessing: public endpoint vs private endpoint
-    Exercise: create a CosmosDB account & use Data Explorer
-        CRUD Questions
-        Search Questions
-    Getting data into Gremlin: no out-of-the-box solution;
+    Running locally: emulator
+    
+    
+    
+    Gremlin:
+      The challenge of many to many
+      The challenge of many to many to many
+      Vertex
+        label
+        PK
+      Edge
+        label
+        PK
+      Property
+      Graph
+      Traversal
+      Gremlin language (groovy-like):
+        format: area (vertex/egde) --> filter -> projection or command -> .next() or .toList() or.fold() 
+        "g.V().drop()",
+        "g.addV('person').property('id', 'thomas').property('firstName', 'Thomas').property('age', 44).property('pk', 'pk')",
+        "g.addV('person').property('id', 'mary').property('firstName', 'Mary').property('lastName', 'Andersen').property('age', 39).property('pk', 'pk')",
+        "g.addV('person').property('id', 'ben').property('firstName', 'Ben').property('lastName', 'Miller').property('pk', 'pk')",
+        "g.addV('person').property('id', 'robin').property(firstName', 'Robin').property('lastName', 'Wakefield').property('pk', 'pk')",
+        // Add a vertex representing a user with an embedded array property for favorite movies; total dict can be as big 2MB
+        "g.addV('user')
+          .property('username', 'Alice')
+          .property('favorites', ['Movie 1', 'Movie 2', 'Movie 3'])
+          .next()", // next supposed to be non-mandatory
+        // Retrieve the user and their favorite movies
+        "g.V().has('username', 'Alice')
+          .valueMap('username', 'favorites')
+          .next()"
+        "g.V('thomas').addE('knows').to(g.V('mary'))",
+        "g.V('thomas').addE('knows').to(g.V('ben'))",
+        "g.V('ben').addE('knows').to(g.V('robin'))",
+        "g.V('thomas').property('age', 44)",
+        "g.V().count()",
+        "g.V().hasLabel('person').has('age', gt(40))",
+        "g.V().hasLabel('person').order().by('firstName', decr)",
+        "g.V('thomas').outE('knows').inV().hasLabel('person')",
+        "g.V('thomas').outE('knows').inV().hasLabel('person').outE('knows').inV().hasLabel('person')",
+        "g.V().has('name', 'Ben').outE('friend').values('name', 'age')", // its a projection - returns only subset of properties of vertex
+        "g.V().has('name', 'Ben').outE('friend').values('name', 'age').fold()", // Fold is a terminal step that returns a list
+        "g.V().has('name', 'Ben')  // Start at the vertex representing Ben
+          .repeat(both().hasLabel('friend')) // we are looking for entities of type Friend, not Boor or Laptop etc.
+          .times(until(loops().is(eq(0))))  // Traverse friends recursively until depth = 0 (nowhere to go)
+          .project('name', 'age')  // Project only name and age properties
+            .by('name')
+            .by('age')"
+        "g.V('thomas').repeat(out()).until(has('id', 'robin')).path()", // Find the path from Thomas to Robin
+        "g.V('thomas').outE('knows').where(inV().has('id', 'mary')).drop()",
+        "g.V('thomas').drop()"
+      Creating db with a Gremlin interface
+        Exercise: create a db
+        Exercise: create a graph
+        Exercise: manipulate the graph with commands above
+      Getting data into Gremlin: no out-of-the-box solution;
         write your own with BulkExecutor
         or dump into JSON then use Data Import tool with JSON
         https://learn.microsoft.com/en-us/azure/cosmos-db/migration-choices
+      Exercise: try to parse the Gremlin from Dict into POJO/record
+
+  API Portal:
+    ☐ API Management
+      Flow: inbound -> backend -> outbound
+      Policies: inbound, outbound, backend
+    ☐ API Portal
+      import swagger
+      take swagger from running app
+      info section: required; lets add it
+    ☐ API Gateway
+      ☐ CORS Proxy: dont forget!
+    ☐ API Product
+    ☐ API Version
+    ☐ API Operation
 
 
 
