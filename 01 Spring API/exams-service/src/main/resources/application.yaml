@@ -6,11 +6,18 @@ spring:
     name: EXAMINATOR
     version: 0.0.1
     environment: dev
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/examinator
+      auto-index-creation: true      # Whether to create the Mongo database if it does not exist
+
 services:
   math:
     url: http://localhost:8081
   history:
       url: http://localhost:8082
+
+
 
 
 management:
