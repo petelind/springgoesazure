@@ -8,6 +8,7 @@ import com.servicenow.exams.config.HistoryClient;
 import com.servicenow.exams.core.Question;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +40,7 @@ public class ExamController {
     }
 
     @GetMapping("/exams")
+    @Cacheable(value = "exams")
     public List<Exam> getAllExams() {
         return (List<Exam>) examRepository.findAll();
     }
