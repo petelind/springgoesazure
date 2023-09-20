@@ -274,9 +274,26 @@ Spring Boot:
       Eventual: no guarantees (including order) whatsoever; client may end up seeing OLDER records
       Can be specified per query!
     Accessing: public endpoint vs private endpoint
-    Running locally: emulator
-    
-    
+    Running locally: emulator in docker or just mongocontainer
+    https://learn.microsoft.com/en-us/azure/cosmos-db/local-emulator?tabs=ssl-netstd21
+    Connecting: uri vs host/port/username etc
+    Kubernetes secrets: just another kind of ConfigMap
+          Encoding to base64
+          Creating Secrets from YAML
+          Using Secrets in YAML: fromSecret
+    Using with Spring Data
+    REDIS:
+      DBs gives <10ms, chances you'll never need it if connected to cluster
+      For App Service - you need it (you run in shared env)
+      If you run in AKS - you may want to have one INSIDE the cluster
+      Using inside the app:
+        @EnableCaching
+        @Cacheable
+          On @Repository level
+          On @Repository level
+        @CacheEvict: 
+          discard collection on writes (delete, update)
+          discard collection timed (if there is background process that updates the collection)
     
     Gremlin:
       The challenge of many to many
