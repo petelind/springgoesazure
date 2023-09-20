@@ -224,14 +224,14 @@ Spring Boot:
       ☐ Front Door
 
   CosmosDB:
-    Relational vs NoSQL vs Graph
-      In the end all boils down to the hash table - so can we just use it?
+    Relational vs NoSQL vs Graph (#13)
+      In the end all boils down to the hash table - so can we just use it? (#11)
     Gremlin interface vs NoSQL interface
-    RUs = CPU + IOPS + mem for 1KB on READ:
-      3X on upserts/inserts
+    RUs = CPU + IOPS + mem for 1KB on READ: (#59)
+      3X on upserts/inserts 
       unknown for queries (query -> query stats -> RUs)
       Capacity Calculator
-    Throughput:
+    Throughput: (#55)
       DB or container level
       Provisioned (be aware of 429 THROTTLED)
       Autoscale
@@ -242,7 +242,7 @@ Spring Boot:
         Fill factor  = target 0.8
         Partition key: high cardinality (unique but not too unique); 20GB limit per partition 
         Avoid hot partitions (date vs datetime vs timestamp)
-        Small items
+        Small items (ideally <4K, 16/32K max)
         No joins: you can embed!
           Embed:
             1:1 yes (Contact got an address)
@@ -250,7 +250,8 @@ Spring Boot:
             N:N no! (Contact got memberships in many Groups instead of individual permissions)
             Embedding with Change Feed: traversal.emit() and @Service @Async @Scheduled(FixedRate=1000)
         Exercise: we have Product and ProductCategory - how to embed?
-          We aim to handle Products! Need complex queries/analytics? Connect Synapse!    
+          We aim to handle Products! Need complex queries/analytics? Connect Synapse!
+          You want both having cross reference? Use Change Feed & Functions.    
         Use projections - ask for what you need
         Indexing: avoid cross-partition ("fan-out") queries (thats why index is all-spanning by default)
           Search vs scan
@@ -266,7 +267,7 @@ Spring Boot:
         Multi-master (write anywhere); can be disabled
         LWW: last write wins
         No versioning (but you can implement via custom resolution)
-    Consistency levels
+    Consistency levels: (#61)
       Strong
       Bound staleness: strong within same region with writes, eventual across regions with K or T
       Session: strong within same session (var client with his pool, that is), eventual across sessions
@@ -274,7 +275,12 @@ Spring Boot:
       Eventual: no guarantees (including order) whatsoever; client may end up seeing OLDER records
       Can be specified per query!
     Accessing: public endpoint vs private endpoint
-    Running locally: emulator
+    Running locally: emulator in docker or just mongocontainer
+    https://learn.microsoft.com/en-us/azure/cosmos-db/local-emulator?tabs=ssl-netstd21
+    Connecting: uri vs host/port/username etc
+    Using with Spring Data
+    
+
     
     
     
