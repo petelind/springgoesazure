@@ -224,125 +224,145 @@ Spring Boot:
       ☐ Front Door
 
   CosmosDB:
-    Relational vs NoSQL vs Graph
-      In the end all boils down to the hash table - so can we just use it?
-    Gremlin interface vs NoSQL interface
-    RUs = CPU + IOPS + mem for 1KB on READ:
-      3X on upserts/inserts
-      unknown for queries (query -> query stats -> RUs)
-      Capacity Calculator
-    Throughput:
-      DB or container level
-      Provisioned (be aware of 429 THROTTLED)
-      Autoscale
-      Serverless
+    ✔ Relational vs NoSQL vs Graph (#13) @done(23-09-20 10:57)
+      ✔ In the end all boils down to the hash table - so can we just use it? (#11) @done(23-09-20 10:57)
+    ✔ Gremlin interface vs NoSQL interface @done(23-09-20 10:57)
+    ✔ RUs = CPU + IOPS + mem for 1KB on READ: (#59) @done(23-09-20 10:57)
+      ✔ 3X on upserts/inserts @done(23-09-20 10:57)
+      ✔ unknown for queries (query -> query stats -> RUs) @done(23-09-20 10:57)
+      ✔ Capacity Calculator @done(23-09-20 10:57)
+    ✔ Throughput: (#55) @done(23-09-20 13:07)
+      ✔ DB or container level @done(23-09-20 13:07)
+      ✔ Provisioned (be aware of 429 THROTTLED) @done(23-09-20 13:07)
+      ✔ Autoscale @done(23-09-20 13:07)
+      ✔ Serverless @done(23-09-20 13:07)
     Design considerations:
-      General concept - its a dict of dicts
-        Embedded dicts-leafs cannot be bigger than 2MB
-        Fill factor  = target 0.8
-        Partition key: high cardinality (unique but not too unique); 20GB limit per partition 
-        Avoid hot partitions (date vs datetime vs timestamp)
-        Small items
-        No joins: you can embed!
+      ✔ General concept - its a dict of dicts @done(23-09-20 10:57)
+        ✔ Embedded dicts-leafs cannot be bigger than 2MB @done(23-09-20 10:57)
+        ✔ Fill factor  = target 0.8 @done(23-09-20 10:57)
+        ✔ Partition key: high cardinality (unique but not too unique); 20GB limit per partition @done(23-09-20 10:58)
+        ✔ Avoid hot partitions (date vs datetime vs timestamp) @done(23-09-20 10:58)
+        ✔ Small items (ideally <4K, 16/32K max) @done(23-09-20 10:58)
+        ✔ No joins: you can embed! @done(23-09-20 10:58)
           Embed:
-            1:1 yes (Contact got an address)
-            1:N if updated together (Contact got individual permissions)
-            N:N no! (Contact got memberships in many Groups instead of individual permissions)
-            Embedding with Change Feed: traversal.emit() and @Service @Async @Scheduled(FixedRate=1000)
-        Exercise: we have Product and ProductCategory - how to embed?
-          We aim to handle Products! Need complex queries/analytics? Connect Synapse!    
-        Use projections - ask for what you need
-        Indexing: avoid cross-partition ("fan-out") queries (thats why index is all-spanning by default)
-          Search vs scan
-          If fan-out is unavoidable (its OK) - use indexes
-        Make common case fast: index for what you gonna query
-        Indexing: include/exclude paths
-          Inlcude: everything in /* except /_attachments
-          Exclude: everything in [] except those you query often
+            ✔ 1:1 yes (Contact got an address) @done(23-09-20 10:58)
+            ✔ 1:N if updated together (Contact got individual permissions) @done(23-09-20 10:58)
+            ✔ N:N no! (Contact got memberships in many Groups instead of individual permissions) @done(23-09-20 10:58)
+            ✔ Embedding with Change Feed: traversal.emit() and @Service @Async @Scheduled(FixedRate=1000) @done(23-09-20 10:58)
+        ✔ Exercise: we have Product and ProductCategory - how to embed? @done(23-09-20 10:58)
+          ✔ We aim to handle Products! Need complex queries/analytics? Connect Synapse! @done(23-09-20 10:58)
+          ✔ You want both having cross reference? Use Change Feed & Functions. @done(23-09-20 10:58)
+        ✔ Use projections - ask for what you need @done(23-09-20 10:58)
+        ✔ Indexing: avoid cross-partition ("fan-out") queries (thats why index is all-spanning by default) @done(23-09-20 13:06)
+          ✔ Search vs scan @done(23-09-20 13:06)
+          ✔ If fan-out is unavoidable (its OK) - use indexes @done(23-09-20 13:06)
+        ✔ Make common case fast: index for what you gonna query @done(23-09-20 13:06)
+        ✔ Indexing: include/exclude paths @done(23-09-20 13:06)
+          ✔ Inlcude: everything in /* except /_attachments @done(23-09-20 13:06)
+          ✔ Exclude: everything in [] except those you query often @done(23-09-20 13:06)
         Precision matters:
-          /headquarters/usa/wa/* exclude kind of supposed to skip...
-          /headquarters/usa/wa/redmond/* include will index nevetheless
-    Geo-replication
-        Multi-master (write anywhere); can be disabled
-        LWW: last write wins
-        No versioning (but you can implement via custom resolution)
-    Consistency levels
-      Strong
-      Bound staleness: strong within same region with writes, eventual across regions with K or T
-      Session: strong within same session (var client with his pool, that is), eventual across sessions
-      Prefix: other regions never receive writes out-of-order
-      Eventual: no guarantees (including order) whatsoever; client may end up seeing OLDER records
-      Can be specified per query!
-    Accessing: public endpoint vs private endpoint
-    Running locally: emulator in docker or just mongocontainer
+          ✔ /headquarters/usa/wa/* exclude kind of supposed to skip... @done(23-09-20 13:06)
+          ✔ /headquarters/usa/wa/redmond/* include will index nevetheless @done(23-09-20 13:06)
+    ✔ Geo-replication @done(23-09-20 13:06)
+        ✔ Multi-master (write anywhere); can be disabled @done(23-09-20 13:06)
+        ✔ LWW: last write wins @done(23-09-20 13:06)
+        ✔ No versioning (but you can implement via custom resolution) @done(23-09-20 13:06)
+    ✔ Consistency levels: (#61) @done(23-09-20 13:06)
+      ✔ Strong @done(23-09-20 13:06)
+      ✔ Bound staleness: strong within same region with writes, eventual across regions with K or T @done(23-09-20 13:06)
+      ✔ Session: strong within same session (var client with his pool, that is), eventual across sessions @done(23-09-20 13:06)
+      ✔ Prefix: other regions never receive writes out-of-order @done(23-09-20 13:06)
+      ✔ Eventual: no guarantees (including order) whatsoever; client may end up seeing OLDER records @done(23-09-20 13:06)
+      ✔ Can be specified per query! @done(23-09-20 13:06)
+    ✔ Accessing: public endpoint vs private endpoint @done(23-09-20 13:06)
+    ✔ Running locally: emulator in docker or just mongocontainer @done(23-09-20 13:06)
     https://learn.microsoft.com/en-us/azure/cosmos-db/local-emulator?tabs=ssl-netstd21
-    Connecting: uri vs host/port/username etc
-    Kubernetes secrets: just another kind of ConfigMap
-          Encoding to base64
-          Creating Secrets from YAML
-          Using Secrets in YAML: fromSecret
-    Using with Spring Data
+    ✔ Connecting: uri vs host/port/username etc @done(23-09-20 13:06)
+    ✔ Kubernetes secrets: just another kind of ConfigMap @done(23-09-20 13:06)
+          ✔ Encoding to base64 @done(23-09-20 13:06)
+          ✔ Creating Secrets from YAML @done(23-09-20 13:06)
+          ✔ Using Secrets in YAML: fromSecret @done(23-09-20 13:06)
+    ✔ Using with Spring Data @done(23-09-20 13:06)
     REDIS:
-      DBs gives <10ms, chances you'll never need it if connected to cluster
-      For App Service - you need it (you run in shared env)
-      If you run in AKS - you may want to have one INSIDE the cluster
-      Using inside the app:
-        @EnableCaching
-        @Cacheable
-          On @Repository level
-          On @Repository level
-        @CacheEvict: 
-          discard collection on writes (delete, update)
-          discard collection timed (if there is background process that updates the collection)
+      ✔ DBs gives <10ms, chances you'll never need it if connected to cluster @done(23-09-20 13:06)
+      ✔ For App Service - you need it (you run in shared env) @done(23-09-20 13:06)
+      ✔ If you run in AKS - you may want to have one INSIDE the cluster @done(23-09-20 13:06)
+      ✔ Using inside the app: @done(23-09-20 13:06)
+        ✔ @EnableCaching @done(23-09-20 13:06)
+        ✔ @Cacheable @done(23-09-20 13:06)
+          ✔ On @Repository level @done(23-09-20 13:06)
+          ✔ On @Controller level @done(23-09-20 13:06)
+        ✔ @CacheEvict: @done(23-09-20 13:07)
+          ✔ discard collection on writes (delete, update) @done(23-09-20 13:07)
+          ✔ discard collection timed (if there is background process that updates the collection) @done(23-09-20 13:07)
     
     Gremlin:
       The challenge of many to many
       The challenge of many to many to many
       Vertex
-        label
-        PK
+        label (eg 'thomas')
+          No uniqueness constraint!!!
+        PK (eg 'user')
       Edge
-        label
-        PK
+        label (eg 'keyContactFor')
+        PK ('AU')
       Property
       Graph
-      Traversal
+      Query VS Traversal
       Gremlin language (groovy-like):
         format: area (vertex/egde) --> filter -> projection or command -> .next() or .toList() or.fold() 
-        "g.V().drop()",
-        "g.addV('person').property('id', 'thomas').property('firstName', 'Thomas').property('age', 44).property('pk', 'pk')",
-        "g.addV('person').property('id', 'mary').property('firstName', 'Mary').property('lastName', 'Andersen').property('age', 39).property('pk', 'pk')",
-        "g.addV('person').property('id', 'ben').property('firstName', 'Ben').property('lastName', 'Miller').property('pk', 'pk')",
-        "g.addV('person').property('id', 'robin').property(firstName', 'Robin').property('lastName', 'Wakefield').property('pk', 'pk')",
+        g.V().drop(),
+        // this one will use label will use label 'person' for the vertex, and you can further split by lets say 'date' as PK
+        g.addV('person').property('id', 'thomas').property('firstName', 'Thomas').property('age', 44).property('pk', 'pk')
+        // this one uses label to distinguish between vertices, and PK to distinguish between segmentation properties
+        g.addV('mary').property('id', 'mary').property('firstName', 'Mary').property('lastName', 'Andersen').property('age', 39).property('pk', 'pk')
+        g.addV('person').property('id', 'ben').property('firstName', 'Ben').property('lastName', 'Miller').property('pk', 'pk')
+        g.addV('person').property('id', 'robin').property(firstName', 'Robin').property('lastName', 'Wakefield').property('pk', 'pk')
         // Add a vertex representing a user with an embedded array property for favorite movies; total dict can be as big 2MB
-        "g.addV('user')
+        
+        // Arrays
+        g.addV('user')
           .property('username', 'Alice')
-          .property('favorites', ['Movie 1', 'Movie 2', 'Movie 3'])
-          .next()", // next supposed to be non-mandatory
+          .property('favorites', ['Movie 1', 'Movie 2', 'Movie 3']) // Will worl on Gremlin Server but not Cosmos
+          .next(), // next supposed to be non-mandatory
         // Retrieve the user and their favorite movies
-        "g.V().has('username', 'Alice')
-          .valueMap('username', 'favorites')
-          .next()"
-        "g.V('thomas').addE('knows').to(g.V('mary'))",
-        "g.V('thomas').addE('knows').to(g.V('ben'))",
-        "g.V('ben').addE('knows').to(g.V('robin'))",
-        "g.V('thomas').property('age', 44)",
-        "g.V().count()",
-        "g.V().hasLabel('person').has('age', gt(40))",
-        "g.V().hasLabel('person').order().by('firstName', decr)",
-        "g.V('thomas').outE('knows').inV().hasLabel('person')",
-        "g.V('thomas').outE('knows').inV().hasLabel('person').outE('knows').inV().hasLabel('person')",
-        "g.V().has('name', 'Ben').outE('friend').values('name', 'age')", // its a projection - returns only subset of properties of vertex
-        "g.V().has('name', 'Ben').outE('friend').values('name', 'age').fold()", // Fold is a terminal step that returns a list
-        "g.V().has('name', 'Ben')  // Start at the vertex representing Ben
-          .repeat(both().hasLabel('friend')) // we are looking for entities of type Friend, not Boor or Laptop etc.
+        g.V().has('username', 'Alice')
+          .valueMap('username', 'favorites') // again, will work on Gremlin Server but not Cosmos
+          .next()
+
+        // Querying
+        g.V('person').property('age', 44)
+        g.V().hasLabel('person').has('age', gt(40))
+        g.V().has('age', between(20, 40))
+        g.V().hasLabel('person').order().by('firstName', decr)
+        g.V().count()
+
+        // Add connections
+        g.V('thomas').addE('knows').to(g.V('mary'))
+        g.V('thomas').addE('knows').to(g.V('ben'))
+        g.V('ben').addE('knows').to(g.V('robin'))
+        
+
+        // Querying connections
+        g.V('thomas').outE('knows').inV().hasLabel('person')
+        g.V('thomas').outE('knows').inV().hasLabel('person').outE('knows').inV().hasLabel('person')
+        g.V().has('name', 'Ben').outE('friend').values('name', 'age') // its a projection - returns only subset of properties of vertex
+        g.V().has('name', 'Ben').outE('friend').values('name', 'age').fold()", // Fold is a terminal step that returns a list
+        g.V().outE('knows').has('since', gte(2010)).inV() // "in values" is a projection-sybquery
+
+        // Recursive queries and traversals
+        g.V('thomas').repeat(out()).until(has('id', 'robin')).path() // Find the path from Thomas to Robin
+        g.V().hasLabel('person').order().by('firstName', decr)
+        g.V('thomas').outE('knows').where(inV().has('id', 'mary'))
+        g.V().has('firstName', 'Ben')  // Start at the vertex representing Ben
+          .repeat(both().hasLabel('person')) // we are looking for entities of type Friend, not Boor or Laptop etc.
           .times(until(loops().is(eq(0))))  // Traverse friends recursively until depth = 0 (nowhere to go)
           .project('name', 'age')  // Project only name and age properties
             .by('name')
-            .by('age')"
-        "g.V('thomas').repeat(out()).until(has('id', 'robin')).path()", // Find the path from Thomas to Robin
-        "g.V('thomas').outE('knows').where(inV().has('id', 'mary')).drop()",
-        "g.V('thomas').drop()"
+            .by('age')
+        
+        g.V().hasLabel('person').order().by('firstName', decr).executionProfile()
+        g.V('thomas').drop()
       Creating db with a Gremlin interface
         Exercise: create a db
         Exercise: create a graph
