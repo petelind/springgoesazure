@@ -55,11 +55,13 @@ public class QuestionRepositoryGremlin {
 
         // so we have to use the old way:
         String query = String.format("g.V().has('Question', 'Id', %d)", id);
-        List<Result> results = gremlinClient.submit(query).all().get();
-
+        Collection<Result> results = gremlinClient.submit(query)
+                .all()
+                .thenApply(gremlinConverter::convert)
+                .get();
 
         if (!results.isEmpty()) {
-            Result result = results.get(0);
+            Result result = results.iterator().next();
             return new Question(
                     id,
                     (String) result.getVertex().property("question").value(),
