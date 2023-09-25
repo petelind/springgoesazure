@@ -1,33 +1,23 @@
 package com.servicenow.math.questions;
 
-import com.servicenow.math.questions.Question;
-import com.servicenow.math.service.GremlinConverter;
 import lombok.RequiredArgsConstructor;
 import org.apache.tinkerpop.gremlin.driver.Client;
 import org.apache.tinkerpop.gremlin.driver.Result;
-import org.apache.tinkerpop.gremlin.driver.remote.DriverRemoteConnection;
-import org.apache.tinkerpop.gremlin.process.traversal.Traversal;
-import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
-import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
-
-import static org.apache.tinkerpop.gremlin.process.traversal.AnonymousTraversalSource.traversal;
 
 @Repository
 @RequiredArgsConstructor
 public class QuestionRepositoryGremlin {
 
     private final Client gremlinClient;
-    private final GremlinConverter gremlinConverter;
 
     public void createQuestion(Question question) throws ExecutionException, InterruptedException {
 /*        String query = String.format("g.addV('Question').property('Id', %d).property('question', '%s').property('answer', '%s')",
@@ -57,7 +47,6 @@ public class QuestionRepositoryGremlin {
         String query = String.format("g.V().has('Question', 'Id', %d)", id);
         Collection<Result> results = gremlinClient.submit(query)
                 .all()
-                .thenApply(gremlinConverter::convert)
                 .get();
 
         if (!results.isEmpty()) {
@@ -100,7 +89,6 @@ public class QuestionRepositoryGremlin {
 
         final Collection<Result> results = gremlinClient.submit(query)
                 .all()
-                .thenApply(gremlinConverter::convert)
                 .get();
 
         // Todo: seems there is no getVertex() method in Result class anymore. Need alternate way to get vertex properties.

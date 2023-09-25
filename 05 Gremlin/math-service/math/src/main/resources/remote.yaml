@@ -4,4 +4,4 @@ username: /dbs/examinator/colls/everything
 password: KTpB16Pm72muQMM419H9DHhfweUOEdUdcNEOgqytS75tbBYVWIJnmyQhvxoHaQ6guhEa3ut3mgAzACDblHbm7w==
 connectionPool: {
   enableSsl: true}
-serializer: { className: org.apache.tinkerpop.gremlin.util.ser.GraphSONMessageSerializerV2, config: { serializeResultToString: true }}
+serializer: { className: com.servicenow.math.service.CustomMessageSerializerV2, config: { serializeResultToString: true }}
