@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class GremlinConverter {
-    public <I, O> Collection<Result> convert(final Collection<Result> source) {
+    public Collection<Result> convert(final Collection<Result> source) {
         return source.stream()
                 .map(this::convert)
                 .collect(Collectors.toCollection(ArrayList::new));
