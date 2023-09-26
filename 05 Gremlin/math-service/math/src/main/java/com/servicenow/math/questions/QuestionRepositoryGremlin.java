@@ -1,5 +1,6 @@
 package com.servicenow.math.questions;
 
+import com.servicenow.math.service.GremlinConverter;
 import lombok.RequiredArgsConstructor;
 import org.apache.tinkerpop.gremlin.driver.Client;
 import org.apache.tinkerpop.gremlin.driver.Result;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 public class QuestionRepositoryGremlin {
 
     private final Client gremlinClient;
+    private final GremlinConverter gremlinConverter;
 
     public void createQuestion(Question question) throws ExecutionException, InterruptedException {
 /*        String query = String.format("g.addV('Question').property('Id', %d).property('question', '%s').property('answer', '%s')",
@@ -89,6 +91,7 @@ public class QuestionRepositoryGremlin {
 
         final Collection<Result> results = gremlinClient.submit(query)
                 .all()
+                .thenApply(gremlinConverter::convert)
                 .get();
 
         // Todo: seems there is no getVertex() method in Result class anymore. Need alternate way to get vertex properties.
