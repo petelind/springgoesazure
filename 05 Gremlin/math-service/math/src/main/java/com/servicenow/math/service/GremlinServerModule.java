@@ -1,5 +1,6 @@
 package com.servicenow.math.service;
 
+import org.apache.tinkerpop.gremlin.structure.Element;
 import org.apache.tinkerpop.gremlin.util.message.RequestMessage;
 import org.apache.tinkerpop.gremlin.util.message.ResponseMessage;
 import org.apache.tinkerpop.gremlin.util.message.ResponseResult;
@@ -18,7 +19,8 @@ public final class GremlinServerModule extends SimpleModule {
         addDeserializer(ResponseMessage.class, new CustomResponseMessageDeserializer());
         addDeserializer(ResponseStatus.class, new CustomResponseStatusDeserializer());
         addDeserializer(ResponseResult.class, new CustomResponseResultDeserializer());
-//            addDeserializer(ResponseMessage.class, new AbstractCustomMessageSerializerV2.ResponseMessageDeserializer());
+//        addDeserializer(Element.class, new ElementDeserializer());
+//            addDeserializer(ResponseMessage.class, new ResponseMessageDeserializer());
         addDeserializer(RequestMessage.class, new RequestMessageDeserializer());
     }
 }

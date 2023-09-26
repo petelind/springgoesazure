@@ -8,6 +8,7 @@ import org.apache.tinkerpop.gremlin.util.ser.SerTokens;
 import java.util.Map;
 import java.util.UUID;
 
+@Deprecated
 public final class ResponseMessageDeserializer extends AbstractObjectDeserializer<ResponseMessage> {
     protected ResponseMessageDeserializer() {
         super(ResponseMessage.class);

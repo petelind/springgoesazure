@@ -36,7 +36,7 @@ public final class CustomResponseMessageDeserializer extends StdDeserializer<Res
                 jp.nextToken();
 
                 final ResponseResult result = deserializationContext.readValue(jp, ResponseResult.class);
-                builder.result(result);
+                builder.result(result.getData()); // TODO, this is done for compatibility
             }
         }
 

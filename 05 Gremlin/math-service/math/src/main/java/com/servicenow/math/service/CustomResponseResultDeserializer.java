@@ -1,5 +1,6 @@
 package com.servicenow.math.service;
 
+import org.apache.tinkerpop.gremlin.structure.Element;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.tinkerpop.gremlin.util.message.ResponseResult;
 import org.apache.tinkerpop.shaded.jackson.core.JacksonException;
@@ -32,8 +33,11 @@ public final class CustomResponseResultDeserializer extends StdDeserializer<Resp
                 if (jp.currentToken() == JsonToken.VALUE_NULL) {
                     // do nothing
                 } else if (jp.currentToken() == JsonToken.START_ARRAY) {
-                    final JavaType javaType = ctx.getTypeFactory().constructArrayType(Vertex.class);
-                    data = ctx.readValue(jp, javaType); // TODO, fixit
+                    final JavaType javaType = ctx.getTypeFactory().constructCollectionType(
+                            List.class,
+                            Vertex.class
+                    );
+                    data = ctx.readValue(jp, javaType);
                 } else {
                     throw new UnsupportedOperationException();
                 }
