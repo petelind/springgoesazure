@@ -1,34 +1,25 @@
 package com.servicenow.math.questions;
 
-import com.servicenow.math.questions.Question;
+import com.servicenow.math.service.GremlinConverter;
+import lombok.RequiredArgsConstructor;
 import org.apache.tinkerpop.gremlin.driver.Client;
 import org.apache.tinkerpop.gremlin.driver.Result;
-import org.apache.tinkerpop.gremlin.driver.remote.DriverRemoteConnection;
-import org.apache.tinkerpop.gremlin.process.traversal.Traversal;
-import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
-import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.util.LinkedHashMap;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
-import static org.apache.tinkerpop.gremlin.process.traversal.AnonymousTraversalSource.traversal;
-
 @Repository
+@RequiredArgsConstructor
 public class QuestionRepositoryGremlin {
 
     private final Client gremlinClient;
-    private final DriverRemoteConnection gremlinConnection;
-
-    public QuestionRepositoryGremlin(Client gremlinClient, DriverRemoteConnection gremlinConnection) {
-        this.gremlinClient = gremlinClient;
-        this.gremlinConnection = gremlinConnection;
-    }
+    private final GremlinConverter gremlinConverter;
 
     public void createQuestion(Question question) throws ExecutionException, InterruptedException {
 /*        String query = String.format("g.addV('Question').property('Id', %d).property('question', '%s').property('answer', '%s')",
@@ -56,11 +47,12 @@ public class QuestionRepositoryGremlin {
 
         // so we have to use the old way:
         String query = String.format("g.V().has('Question', 'Id', %d)", id);
-        List<Result> results = gremlinClient.submit(query).all().get();
-
+        Collection<Result> results = gremlinClient.submit(query)
+                .all()
+                .get();
 
         if (!results.isEmpty()) {
-            Result result = results.get(0);
+            Result result = results.iterator().next();
             return new Question(
                     id,
                     (String) result.getVertex().property("question").value(),
@@ -97,7 +89,11 @@ public class QuestionRepositoryGremlin {
     public List<Question> findAllQuestions() throws ExecutionException, InterruptedException {
         String query = "g.V().hasLabel('Question')";
 
-        List<Result> results = gremlinClient.submit(query).all().get();
+        final Collection<Result> results = gremlinClient.submit(query)
+                .all()
+                .thenApply(gremlinConverter::convert)
+                .get();
+
         // Todo: seems there is no getVertex() method in Result class anymore. Need alternate way to get vertex properties.
         return results.stream().map(result ->
                 new Question(
